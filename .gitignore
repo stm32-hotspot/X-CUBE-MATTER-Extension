@@ -1,0 +1,12 @@
+*.chm
+**/STM32CubeIDE/Application/
+**/STM32CubeIDE/Debug**/
+**/STM32CubeIDE/Drivers/
+**/STM32CubeIDE/Middlewares/
+**/STM32CubeIDE/Utilities/
+**/STM32CubeIDE/.settings/
+**/STM32CubeIDE/*.launch
+**/STM32CubeIDE/*.ld
+**/Binaries/
+Middlewares/ST/STM32_Secure_Engine/
+Utilities/APK/

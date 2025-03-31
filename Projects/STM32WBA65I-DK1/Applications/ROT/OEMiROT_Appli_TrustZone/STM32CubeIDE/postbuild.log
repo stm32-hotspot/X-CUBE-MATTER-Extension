@@ -1,0 +1,134 @@
+
+Postbuild secure image
+Creating secure image
+Thu Mar  6 15:21:52 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:21:52 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin --string -n Firmware binary input file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Image.xml --vb
+Thu Mar  6 15:21:52 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin
+Thu Mar  6 15:21:52 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Image.xml' file
+Thu Mar  6 15:21:52 2025 : [INF] Searching the parameter with <Name>Firmware binary input file</Name> element
+Thu Mar  6 15:21:52 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin</Value>'
+Thu Mar  6 15:21:52 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:21:52 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin)
+Thu Mar  6 15:21:52 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:21:52 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_enc_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Image.xml --vb
+Thu Mar  6 15:21:52 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_enc_sign.bin
+Thu Mar  6 15:21:52 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Image.xml' file
+Thu Mar  6 15:21:52 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:21:52 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_enc_sign.bin</Value>'
+Thu Mar  6 15:21:52 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:21:52 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_enc_sign.bin)
+      -------------------------------------------------------------------
+                       STM32 Trusted Package Creator v0.0.2-WBA6-A01                  
+      -------------------------------------------------------------------
+
+-pb C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Image.xml 
+ 
+Image generated successfully 
+
+Thu Mar  6 15:21:57 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:21:57 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin --string -n Firmware binary input file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Init_Image.xml --vb
+Thu Mar  6 15:21:57 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin
+Thu Mar  6 15:21:57 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Init_Image.xml' file
+Thu Mar  6 15:21:57 2025 : [INF] Searching the parameter with <Name>Firmware binary input file</Name> element
+Thu Mar  6 15:21:57 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin</Value>'
+Thu Mar  6 15:21:57 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:21:57 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app.bin)
+Thu Mar  6 15:21:57 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:21:57 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_init_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Init_Image.xml --vb
+Thu Mar  6 15:21:57 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_init_sign.bin
+Thu Mar  6 15:21:57 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Init_Image.xml' file
+Thu Mar  6 15:21:57 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:21:57 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_init_sign.bin</Value>'
+Thu Mar  6 15:21:57 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:21:57 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_s_app_init_sign.bin)
+      -------------------------------------------------------------------
+                       STM32 Trusted Package Creator v0.0.2-WBA6-A01                  
+      -------------------------------------------------------------------
+
+-pb C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Code_Init_Image.xml 
+ 
+Image generated successfully 
+
+Thu Mar  6 15:22:02 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:22:02 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../Binary/s_data_enc_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Data_Image.xml --vb
+Thu Mar  6 15:22:02 2025 : [INF] Value to be used ../Binary/s_data_enc_sign.bin
+Thu Mar  6 15:22:02 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Data_Image.xml' file
+Thu Mar  6 15:22:02 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:22:02 2025 : [INF] Parameter found. Verifying information of '<Value>../Binary/s_data_enc_sign.bin</Value>'
+Thu Mar  6 15:22:02 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:22:02 2025 : [INF] The tag <Value> has already the correct content (../Binary/s_data_enc_sign.bin)
+Thu Mar  6 15:22:02 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:22:02 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../Binary/s_data_init_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Data_Init_Image.xml --vb
+Thu Mar  6 15:22:02 2025 : [INF] Value to be used ../Binary/s_data_init_sign.bin
+Thu Mar  6 15:22:02 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_S_Data_Init_Image.xml' file
+Thu Mar  6 15:22:02 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:22:02 2025 : [INF] Parameter found. Verifying information of '<Value>../Binary/s_data_init_sign.bin</Value>'
+Thu Mar  6 15:22:02 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:22:02 2025 : [INF] The tag <Value> has already the correct content (../Binary/s_data_init_sign.bin)
+
+Postbuild nonsecure image
+Creating nonsecure image
+Thu Mar  6 15:45:18 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:45:18 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin --string -n Firmware binary input file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Image.xml --vb
+Thu Mar  6 15:45:18 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin
+Thu Mar  6 15:45:18 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Image.xml' file
+Thu Mar  6 15:45:18 2025 : [INF] Searching the parameter with <Name>Firmware binary input file</Name> element
+Thu Mar  6 15:45:18 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin</Value>'
+Thu Mar  6 15:45:18 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:45:18 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin)
+Thu Mar  6 15:45:19 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:45:19 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_enc_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Image.xml --vb
+Thu Mar  6 15:45:19 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_enc_sign.bin
+Thu Mar  6 15:45:19 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Image.xml' file
+Thu Mar  6 15:45:19 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:45:19 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_enc_sign.bin</Value>'
+Thu Mar  6 15:45:19 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:45:19 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_enc_sign.bin)
+      -------------------------------------------------------------------
+                       STM32 Trusted Package Creator v0.0.2-WBA6-A01                  
+      -------------------------------------------------------------------
+
+-pb C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Image.xml 
+ 
+Image generated successfully 
+
+Thu Mar  6 15:45:23 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:45:23 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin --string -n Firmware binary input file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Init_Image.xml --vb
+Thu Mar  6 15:45:23 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin
+Thu Mar  6 15:45:23 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Init_Image.xml' file
+Thu Mar  6 15:45:23 2025 : [INF] Searching the parameter with <Name>Firmware binary input file</Name> element
+Thu Mar  6 15:45:23 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin</Value>'
+Thu Mar  6 15:45:23 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:45:23 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app.bin)
+Thu Mar  6 15:45:24 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:45:24 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_init_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Init_Image.xml --vb
+Thu Mar  6 15:45:24 2025 : [INF] Value to be used ../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_init_sign.bin
+Thu Mar  6 15:45:24 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Init_Image.xml' file
+Thu Mar  6 15:45:24 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:45:24 2025 : [INF] Parameter found. Verifying information of '<Value>../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_init_sign.bin</Value>'
+Thu Mar  6 15:45:24 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:45:24 2025 : [INF] The tag <Value> has already the correct content (../../../Applications/ROT/OEMiROT_Appli_TrustZone/Binary/oemirot_tz_ns_app_init_sign.bin)
+      -------------------------------------------------------------------
+                       STM32 Trusted Package Creator v0.0.2-WBA6-A01                  
+      -------------------------------------------------------------------
+
+-pb C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Code_Init_Image.xml 
+ 
+Image generated successfully 
+
+Thu Mar  6 15:45:29 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:45:29 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../Binary/ns_data_enc_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Data_Image.xml --vb
+Thu Mar  6 15:45:29 2025 : [INF] Value to be used ../Binary/ns_data_enc_sign.bin
+Thu Mar  6 15:45:29 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Data_Image.xml' file
+Thu Mar  6 15:45:29 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:45:29 2025 : [INF] Parameter found. Verifying information of '<Value>../Binary/ns_data_enc_sign.bin</Value>'
+Thu Mar  6 15:45:29 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:45:29 2025 : [INF] The tag <Value> has already the correct content (../Binary/ns_data_enc_sign.bin)
+Thu Mar  6 15:45:29 2025 : [INF] ############## Executing xmlval command ##############
+Thu Mar  6 15:45:29 2025 : [INF] C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/../../..//Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe xmlval -v ../Binary/ns_data_init_sign.bin --string -n Image output file C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Data_Init_Image.xml --vb
+Thu Mar  6 15:45:29 2025 : [INF] Value to be used ../Binary/ns_data_init_sign.bin
+Thu Mar  6 15:45:29 2025 : [INF] Opening the 'C:/DEV/MATTER_feature_x_cube/STM32WB-Matter-BLE-Thread/Projects/STM32WBA65I-DK1/ROT_Provisioning/OEMiROT/Images/OEMiROT_NS_Data_Init_Image.xml' file
+Thu Mar  6 15:45:29 2025 : [INF] Searching the parameter with <Name>Image output file</Name> element
+Thu Mar  6 15:45:29 2025 : [INF] Parameter found. Verifying information of '<Value>../Binary/ns_data_init_sign.bin</Value>'
+Thu Mar  6 15:45:29 2025 : [INF] The modification is not necessary
+Thu Mar  6 15:45:29 2025 : [INF] The tag <Value> has already the correct content (../Binary/ns_data_init_sign.bin)
