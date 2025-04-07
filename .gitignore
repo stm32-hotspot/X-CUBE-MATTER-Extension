@@ -8,5 +8,3 @@
 **/STM32CubeIDE/*.launch
 **/STM32CubeIDE/*.ld
 **/Binaries/
-Middlewares/ST/STM32_Secure_Engine/
-Utilities/APK/
