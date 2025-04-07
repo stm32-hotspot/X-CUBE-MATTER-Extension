@@ -1,4 +1,4 @@
-# X-Cube-Matter 1.4 projects for Nucleo
+# X-Cube-Matter 1.4 extension
 
 This package is based on the X-Cube-Matter 1.4 firmware package.
 It is extending the portfolio of supported boards with the NUCLEO-WBA65RI.
