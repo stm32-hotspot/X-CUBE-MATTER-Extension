@@ -372,7 +372,7 @@
 									<listOptionValue builtIn="false" value="../../System/Config/Debug_GPIO"/>
 									<listOptionValue builtIn="false" value="../../STM32_WPAN/App"/>
 									<listOptionValue builtIn="false" value="../../STM32_WPAN/Target"/>
-									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/STM32WBA65I-DK1"/>
+									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/STM32WBAxx_Nucleo"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/Components/Common"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/STM32WBAxx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/STM32WBAxx_HAL_Driver/Inc/Legacy"/>
@@ -480,7 +480,7 @@
 									<listOptionValue builtIn="false" value="../../../../../../../Utilities/sequencer"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Utilities/tim_serv"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Utilities/lpm/tiny_lpm"/>
-									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/STM32WBA65I-DK1"/>
+									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/STM32WBAxx_Nucleo"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/Components/Common"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/STM32WBAxx_HAL_Driver/Inc/Legacy"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/STM32WBAxx_HAL_Driver/Inc"/>

@@ -1,7 +1,18 @@
 # X-Cube-Matter 1.4 extension
 
-This package is based on the X-Cube-Matter 1.4 firmware package.
+This package is based on the X-Cube-Matter 1.4 firmware ([package](https://www.st.com/en/embedded-software/x-cube-matter.html)).
 It is extending the portfolio of supported boards with the NUCLEO-WBA65RI.
+It also extending the range of example applications provided.
+
+Examples in this package (* are available in the original package):
+  * Generic switch *
+  * Lighting *
+  * Lock
+  * Temperature sensor
+  * Thermostat
+  * Window covering *
+
+Each example project has its own Readme.txt file with description and details on how to operate the application.
 
 **STM32Cube** is a STMicroelectronics original initiative to ease the developers life by reducing efforts, time and cost.
 
