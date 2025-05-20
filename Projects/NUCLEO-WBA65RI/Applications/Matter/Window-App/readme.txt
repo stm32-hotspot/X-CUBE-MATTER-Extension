@@ -22,7 +22,7 @@
 
 Window_App example is based on Matter and behaves as a Matter accessory communicating over a 802.15.4 Thread network.
 It can be commissioned into an existing Matter Fabric and can interact with other devices within this Fabric.
-The STM32WBA65I-DK1 board running Window_App application is capable 
+The NUCLEO-WBA65RI board running Window_App application is capable 
 of BLE and OpenThread activity at the same time.
 
 @par Keywords
@@ -37,7 +37,7 @@ THREAD,BLE,Matter
  
 @par Hardware and Software environment
 
-  - This example has been tested with an STMicroelectronics STM32WBA65I-DK1 board 
+  - This example has been tested with an STMicroelectronics NUCLEO-WBA65RI board 
     
 @par How to use it ? 
 
@@ -47,14 +47,14 @@ Refer to release note to identify the STM32CubeIDE and STM32CubeProgrammer versi
 
 
 Minimum requirements for the demo:
-- 1 STM32WBA65I-DK1 board with Window_App firmware.
+- 1 NUCLEO-WBA65RI board with Window_App firmware.
 - 1 OTBR (Raspberry Pi or MP135 + Nucleo RCP) or any supported ecosystem by Matter
 - 1 Smartphone (Android) with "CHIPTool" Phone Application (available Utilities/APK/app-debug-v_1_3.zip) 
 or chiptool on RPi or Ecosystem application
 
 
 In order to make the program work, you must do the following: 
- - Connect STM32WBA65I-Discovery boards to your PC 
+ - Connect NUCLEO-WBA65RI boards to your PC 
  - Open STM32CubeIDE
  - Rebuild all files and load your image into target memory
  - Run the example
@@ -73,24 +73,14 @@ Follow the instruction defined in https://wiki.st.com/stm32mcu/wiki/Connectivity
 
 1st boot the End Device must be commissioned (BLE then Thread)
 Then other boot, only Thread is needed
-
-**** LCD SUMMARY ****
-LCD Mapping :
- - The LCD screen displays "BLE connected" when the BLE rendezvous started.
- - The LCD screen displays "Network Joined" when the board joined a thread network.
- - The LCD screen displays the opening pourcentage of the windows or the finish status
- - The LCD screen displays: "Fabric Created": if commissioning success.
-                            "Fabric Failed" : if commissioning failed.
-                            "Fabric Found"  : if the credentials from the non-volatile memory(NVM)
-                                              have been found 
 											  
 ****  BUTTON SUMMARY ****
-Joystick Mapping:
+Button Mapping:
 
-- Joystick up:
-    save persistent data in non-volatile memory before resetting or removing power supply of the board.
--Joystick Select:
-    Press joystick to trigger a factory reset.
+- Button 1:
+   Press the button for at least 5 seconds to trigger a factory reset.
+   Press the button (short press) to save persistent data in non-volatile memory before resetting or removing power supply of the board.
+
  * <h3><center>&copy; COPYRIGHT STMicroelectronics</center></h3>
  */
  
