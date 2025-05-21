@@ -22,7 +22,7 @@
 
 generic_switch_App example is based on Matter and behaves as a Matter accessory communicating over a 802.15.4 Thread network.
 It can be commissioned into an existing Matter Fabric and can interact with other devices within this Fabric.
-The STM32WBA65I-DK1 board running generic-switch-app application is capable
+The NUCLEO-WBA65RI board running generic-switch-app application is capable
 of BLE and OpenThread activity at the same time.
 
 @par Keywords
@@ -37,7 +37,7 @@ THREAD,BLE,Matter
 
 @par Hardware and Software environment
 
-  - This example has been tested with an STMicroelectronics STM32WBA65I-DK1 board
+  - This example has been tested with an STMicroelectronics NUCLEO-WBA65RI board
 
 @par How to use it ?
 
@@ -47,13 +47,13 @@ Refer to release note to identify the STM32CubeIDE and STM32CubeProgrammer versi
 
 
 Minimum requirements for the demo:
-- 1 STM32WBA65I-DK1 with generic-switch-App firmware.
+- 1 NUCLEO-WBA65RI with generic-switch-App firmware.
 - 1 OTBR (Raspberry Pi or MP135 + Nucleo RCP) or any supported ecosystem by Matter
 - 1 Smartphone (Android) with "CHIPTool" Phone Application (available Utilities/APK/app-debug-v_1_3.zip) or chiptool on RPi or Ecosystem application
 
 
 In order to make the program work, you must do the following:
- - Connect STM32WBA65I-Discovery boards to your PC
+ - Connect NUCLEO-WBA65RI boards to your PC
  - Open STM32CubeIDE
  - Rebuild all files and load your image into target memory
  - Run the example
@@ -73,21 +73,16 @@ Follow the instruction defined in https://wiki.st.com/stm32mcu/wiki/Connectivity
 1st boot the End Device must be commissioned (BLE then Thread)
 Then other boot, only Thread is needed
 
-**** LED SUMMARY ****
-- No LED management
-
-
 ****  BUTTON SUMMARY ****
-Joystick Mapping:
+Button Mapping:
 
-- Joystick UP:
-    save persistent data in non-volatile memory before resetting or removing power supply of the board.
-- Joystick SELECT long press (5s):
-    trigger a factory reset.
-- Joystick RIGHT:
-    switch short release
-- Joystick RIGHT long press (5s):
-    switch long press
+- Button 1:
+   Press the button for at least 5 seconds to trigger a factory reset.
+   Press the button (short press) to save persistent data in non-volatile memory before resetting or removing power supply of the board.
+- Button 3:
+   Press the button for at least 5 seconds to trigger a switch short press event.
+   Press the button (short press) to trigger a switch long press event.
+
  * <h3><center>&copy; COPYRIGHT STMicroelectronics</center></h3>
  */
 
