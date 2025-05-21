@@ -8,6 +8,7 @@ Examples in this package (* are available in the original package):
   * Generic switch *
   * Lighting *
   * Lock
+  * Smart plug (with power consumption reporting)
   * Temperature sensor
   * Thermostat
   * Window covering *
