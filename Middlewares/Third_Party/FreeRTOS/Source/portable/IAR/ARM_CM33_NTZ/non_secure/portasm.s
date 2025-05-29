@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V10.3.1
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.5.1
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -19,10 +21,9 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * http://www.FreeRTOS.org
- * http://aws.amazon.com/freertos
+ * https://www.FreeRTOS.org
+ * https://github.com/FreeRTOS
  *
- * 1 tab == 4 spaces!
  */
 /* Including FreeRTOSConfig.h here will cause build errors if the header file
 contains code not understood by the assembler - for example the 'extern' keyword.
@@ -116,6 +117,8 @@ vRestoreContextOfFirstTask:
 	adds r0, #32							/* Discard everything up to r0. */
 	msr  psp, r0							/* This is now the new top of stack to use in the task. */
 	isb
+	mov  r0, #0
+	msr  basepri, r0						/* Ensure that interrupts are enabled when the first task starts. */
 	bx   r3									/* Finally, branch to EXC_RETURN. */
 #else /* configENABLE_MPU */
 	ldm  r0!, {r1-r2}						/* Read from stack - r1 = PSPLIM and r2 = EXC_RETURN. */
@@ -125,6 +128,8 @@ vRestoreContextOfFirstTask:
 	adds r0, #32							/* Discard everything up to r0. */
 	msr  psp, r0							/* This is now the new top of stack to use in the task. */
 	isb
+	mov  r0, #0
+	msr  basepri, r0						/* Ensure that interrupts are enabled when the first task starts. */
 	bx   r2									/* Finally, branch to EXC_RETURN. */
 #endif /* configENABLE_MPU */
 /*-----------------------------------------------------------*/
@@ -166,11 +171,11 @@ vClearInterruptMask:
 
 PendSV_Handler:
 	mrs r0, psp								/* Read PSP in r0. */
-#if ( configENABLE_FPU == 1 )
-	tst lr, #0x10							/* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the FPU is in use. */
+#if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
+	tst lr, #0x10							/* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the Extended Stack Frame is in use. */
 	it eq
-	vstmdbeq r0!, {s16-s31}					/* Store the FPU registers which are not saved automatically. */
-#endif /* configENABLE_FPU */
+	vstmdbeq r0!, {s16-s31}					/* Store the additional FP context registers which are not saved automatically. */
+#endif /* configENABLE_FPU || configENABLE_MVE */
 #if ( configENABLE_MPU == 1 )
 	mrs r1, psplim							/* r1 = PSPLIM. */
 	mrs r2, control							/* r2 = CONTROL. */
@@ -230,11 +235,11 @@ PendSV_Handler:
 	ldmia r0!, {r2-r11}						/* Read from stack - r2 = PSPLIM, r3 = LR and r4-r11 restored. */
 #endif /* configENABLE_MPU */
 
-#if ( configENABLE_FPU == 1 )
-	tst r3, #0x10							/* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the FPU is in use. */
+#if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
+	tst r3, #0x10							/* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the Extended Stack Frame is in use. */
 	it eq
-	vldmiaeq r0!, {s16-s31}					/* Restore the FPU registers which are not restored automatically. */
-#endif /* configENABLE_FPU */
+	vldmiaeq r0!, {s16-s31}					/* Restore the additional FP context registers which are not restored automatically. */
+#endif /* configENABLE_FPU || configENABLE_MVE */
 
  #if ( configENABLE_MPU == 1 )
 	msr psplim, r1							/* Restore the PSPLIM register value for the task. */

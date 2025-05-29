@@ -213,7 +213,7 @@ static void  configure_sram1_sram2_sram6()
 
   /* SRAM2 MPCBB configuration
    *   Security Config = Secure only (=1)
-   *   Privileged config = Only Priviledged (=1)
+   *   Privileged config = Only Privileged (=1)
    */
   for (index = 0; index <= 3; index++)
   {

@@ -39,13 +39,6 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-extern osTimerId_t advLowPowerTimerHandle;
-extern osTimerId_t HRSAPPMeasurementsTimerHandle;
-
-extern osSemaphoreId_t advertisingSemaphoreHandle;
-
-extern osMessageQueueId_t advertisingCmdQueueHandle;
-
 extern osMutexId_t             LinkLayerMutex;
 /* USER CODE END ET */
 
@@ -77,8 +70,7 @@ extern void* p_param;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-//extern void MX_FreeRtos_Init        ( void );
-void MX_FREERTOS_Init(void);
+
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

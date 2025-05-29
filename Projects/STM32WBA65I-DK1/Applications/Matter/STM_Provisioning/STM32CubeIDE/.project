@@ -308,39 +308,39 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/aes_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/hal/aes_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/aes_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/aes_alt.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/ecdh_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/hal/ecdh_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/ecdh_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/ecdh_alt.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/ecp_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/hal/ecp_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/ecp_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/ecp_alt.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/ecp_curves_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/hal/ecp_curves_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/ecp_curves_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/ecp_curves_alt.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/entropy_hardware_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/hal/entropy_hardware_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/entropy_hardware_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/entropy_hardware_alt.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/gcm_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/hal/gcm_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/gcm_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/gcm_alt.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ST/mbedtls_alt/psa_its_alt.c</name>
+			<name>Middlewares/STM32WBA_WPAN/mbedtls_alt/its/psa_its_alt.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/psa_its_alt.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/its/psa_its_alt.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

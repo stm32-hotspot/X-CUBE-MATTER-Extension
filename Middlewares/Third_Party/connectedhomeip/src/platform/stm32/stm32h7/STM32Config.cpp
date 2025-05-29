@@ -39,15 +39,13 @@ CHIP_ERROR STM32Config::Init()
 {
     CHIP_ERROR err;
 
-    ChipLogProgress(DeviceLayer, "STM32 ConfigInit");
-    err = ConvertNVMStatus(NVM_Init(BUFFER_KEY_LEN_MAX));
+    err = ConvertNVMStatus(NVM_Init(BUFFER_KEY_LEN_MAX, sizeof(size_t), NVM_SECTOR_CONFIG));
 
     return err;
 }
 
 void STM32Config::DeInit()
 {
-    ChipLogProgress(DeviceLayer, "STM32 ConfigDeInit");
 }
 
 CHIP_ERROR STM32Config::ReadConfigValue(Key key, bool &val)
@@ -77,7 +75,6 @@ CHIP_ERROR STM32Config::ReadConfigValue(Key key, uint32_t &val)
     uint32_t tmpVal;
     size_t outLen;
 
-    // ChipLogProgress(DeviceLayer, "STM32 ReadConfigValueUINT32 %s", ProvideKeyString(key));
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -97,7 +94,6 @@ CHIP_ERROR STM32Config::ReadConfigValue(Key key, uint64_t &val)
     uint64_t tmpVal;
     size_t outLen;
 
-    // ChipLogProgress(DeviceLayer, "STM32 ReadConfigValueUINT64 %s", ProvideKeyString(key));
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -114,7 +110,6 @@ CHIP_ERROR STM32Config::ReadConfigValueStr(Key key, char *buf, size_t bufSize, s
 {
     CHIP_ERROR err;
 
-    // ChipLogProgress(DeviceLayer, "STM32 ReadConfigValueStr %s", ProvideKeyString(key));
     err = ReadConfigValueBin(key, reinterpret_cast<uint8_t*>(buf), bufSize, outLen);
     // or go through a uint8_t *tmpBuf = NULL and tmpBufLen = strlen(tmpBuf)
     // if (tmpBufLen <= 0) err = CHIP_ERROR_INVALID_STRING_LENGTH;
@@ -131,7 +126,6 @@ CHIP_ERROR STM32Config::ReadConfigValueBin(Key key, uint8_t *buf, size_t bufSize
     CHIP_ERROR err;
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
 
-    // ChipLogProgress(DeviceLayer, "STM32 ReadConfigValueBin %s", ProvideKeyString(key));
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -149,7 +143,6 @@ CHIP_ERROR STM32Config::ReadConfigValueCounter(uint8_t counterIdx, uint32_t & va
     uint32_t tmpVal;
     size_t outLen;
 
-    // ChipLogProgress(DeviceLayer, "STM32 ReadConfigValueCounter %lu", key);
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -169,7 +162,6 @@ CHIP_ERROR STM32Config::WriteConfigValue(Key key, bool val)
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
     uint8_t tmpVal;
 
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValue: %s %s", ProvideKeyString(key), val ? "true" : "false");
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -185,7 +177,6 @@ CHIP_ERROR STM32Config::WriteConfigValue(Key key, uint32_t val)
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
     uint8_t tmpVal[sizeof(uint32_t)];
 
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValue: %s %" PRIu32 " (0x%" PRIX32 ")", ProvideKeyString(key), val, val);
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -204,7 +195,6 @@ CHIP_ERROR STM32Config::WriteConfigValue(Key key, uint64_t val)
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
     uint8_t tmpVal[sizeof(uint64_t)];
 
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValue: %s %" PRIu64 " (0x%" PRIX64 ")", ProvideKeyString(key), val, val);
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -219,13 +209,11 @@ CHIP_ERROR STM32Config::WriteConfigValue(Key key, uint64_t val)
 
 CHIP_ERROR STM32Config::WriteConfigValueStr(Key key, const char *str)
 {
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValueStr: %s = \"%s\"", ProvideKeyString(key), str);
     return WriteConfigValueStr(key, str, (str != NULL) ? strlen(str) : 0);
 }
 
 CHIP_ERROR STM32Config::WriteConfigValueStr(Key key, const char *str, size_t strLen)
 {
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValueStrlen: %s = \"%s\" %" PRIu32 "", ProvideKeyString(key), str, (uint32_t)strLen);
     return WriteConfigValueBin(key, reinterpret_cast<const uint8_t*>(str), strLen);
 }
 
@@ -234,7 +222,6 @@ CHIP_ERROR STM32Config::WriteConfigValueBin(Key key, const uint8_t * data, size_
     CHIP_ERROR err;
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
 
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValueBin: %s = (blob length %" PRId32 ")", ProvideKeyString(key), (uint32_t)dataLen);
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -251,7 +238,6 @@ CHIP_ERROR STM32Config::WriteConfigValueCounter(uint8_t counterIdx, uint32_t val
     Key key = kMinConfigKey_MatterCounter + counterIdx;
     uint8_t tmpVal[sizeof(uint32_t)];
 
-    // ChipLogProgress(DeviceLayer, "STM32 WriteConfigValueCounter %lu", key);
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -270,7 +256,6 @@ CHIP_ERROR STM32Config::ClearConfigValue(Key key)
     CHIP_ERROR err;
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
 
-    // ChipLogProgress(DeviceLayer, "STM32 ClearConfigValue %s", ProvideKeyString(key));
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -284,7 +269,6 @@ bool STM32Config::ConfigValueExists(Key key)
     NVM_StatusTypeDef err;
     char bufferKey[BUFFER_KEY_LEN_MAX] = {0,};
 
-    // ChipLogProgress(DeviceLayer, "STM32 ConfigValueExists %s", ProvideKeyString(key));
     // VerifyOrExit(ValidConfigKey(key), err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND); // Verify key id.
     // sprintf(bufferKey, "%07x", key);
     sprintf(bufferKey, "Config%" PRIu32, key);
@@ -372,23 +356,6 @@ CHIP_ERROR STM32Config::ConvertNVMStatus(NVM_StatusTypeDef nvmStatus)
 
     return err;
 }
-
-#if 0
-bool STM32Config::ValidConfigKey(Key key)
-{
-    bool result = false;
-    // Returns true if the key is in the Matter key range.
-    // Additional check validates that the user consciously defined the expected key range
-    if (((key >= kMatterNvramKeyLoLimit) && (key <= kMatterNvramKeyHiLimit))
-        && (((key >= kMinConfigKey_MatterFactory) && (key <= kMaxConfigKey_MatterFactory))
-            || ((key >= kMinConfigKey_MatterConfig) && (key <= kMaxConfigKey_MatterConfig))))
-    {
-        result = true;
-    }
-
-    return result;
-}
-#endif /* unused */
 
 } // namespace Internal
 } // namespace DeviceLayer

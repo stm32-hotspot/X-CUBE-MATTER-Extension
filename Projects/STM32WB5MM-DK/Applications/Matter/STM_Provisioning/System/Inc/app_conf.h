@@ -741,10 +741,10 @@ typedef enum
 /******************************************************************************
  * versions
  ******************************************************************************/
-#define X_CUBE_MATTER_VERSION "1.1.0"
-#define PRODUCT_NAME "Dimmable Light" 
+#define X_CUBE_MATTER_VERSION "1.4.1"
+#define PRODUCT_NAME "STM_Provisioning" 
 #define VENDOR_NAME "STMicroelectronics"
-#define MATTER_SDK_VERSION "1.3"
+#define MATTER_SDK_VERSION "1.4"
 
 /******************************************************************************
  * Matter Factory data

@@ -73,6 +73,15 @@ Follow the instruction defined in https://wiki.st.com/stm32mcu/wiki/Connectivity
 1st boot the End Device must be commissioned (BLE then Thread)
 Then other boot, only Thread is needed
 
+**** LCD SUMMARY ****
+LCD Mapping :
+ - The LCD screen displays "BLE connected" when the BLE rendezvous started.
+ - The LCD screen displays "Network Joined" when the board joined a thread network.
+ - The LCD screen displays: "Fabric Created": if commissioning success.
+                            "Fabric Failed" : if commissioning failed.
+                            "Fabric Found"  : if the credentials from the non-volatile memory(NVM)
+                                              have been found 
+
 **** LED SUMMARY ****
 - No LED management
 
@@ -84,9 +93,9 @@ Joystick Mapping:
     save persistent data in non-volatile memory before resetting or removing power supply of the board.
 - Joystick SELECT long press (5s):
     trigger a factory reset.
-- Joystick RIGHT:
+- Joystick LEFT:
     switch short release
-- Joystick RIGHT long press (5s):
+- Joystick LEFT long press (5s):
     switch long press
  * <h3><center>&copy; COPYRIGHT STMicroelectronics</center></h3>
  */

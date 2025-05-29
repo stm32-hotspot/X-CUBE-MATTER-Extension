@@ -41,7 +41,6 @@ extern "C" {
 #ifdef STM32WBA65xx
 #ifdef CFG_BSP_ON_DISCOVERY
 #include "stm32wba65i_discovery.h"
-#include "stm32wba65i_discovery_bus.h"
 #if (CFG_LCD_SUPPORTED == 1)
 #include "stm32wba65i_discovery_lcd.h"
 #include "stm32_lcd.h"
@@ -57,7 +56,6 @@ extern "C" {
 #endif /* CFG_BSP_ON_CEB */
 
 #include "stm32_timer.h"
-
 /* Private includes ----------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
@@ -72,17 +70,6 @@ extern "C" {
 #define    LED_BLUE                       LED_RED
 #endif /* (defined CFG_BSP_ON_DISCOVERY) && (defined STM32WBA65xx) */
 
-#if (CFG_JOYSTICK_SUPPORTED == 1)
-#define JOYSTICK_USE_AS_JOYSTICK          (0u)    /* When Joystick is not 'none', call according 'Joystick Action' every JOYSTICK_PRESS_SAMPLE_MS. */
-#define JOYSTICK_USE_AS_BUTTON            (1u)    /* When Joystick is pressed, call according 'Joystick Action' one time. */
-#define JOYSTICK_USE_AS_BUTTON_WITH_TIME  (2u)    /* When Joystick is pressed, it wait the release or the end of  JOYSTICK_LONG_PRESS_THRESHOLD_MS 
-                                                     before call according 'Joystick Action'. */
-#define JOYSTICK_USE_AS_CHANGE            (3u)    /* When Joystcik is pressed according 'Joystick Action' is called. When the Joystick is released, 'JoystickNoneAction' is called. */
-#define JOYSTICK_USE_AS_MATTER            (4u)    /* When Joystick is pressed, according 'Joystick Action' is called. When the Joystick is released or the end 
-                                                     of JOYSTICK_LONG_PRESS_THRESHOLD_MS occurs, according 'Joystick Action' is called (same as when pressed). */
-#endif /* (CFG_JOYSTICK_SUPPORTED == 1) */
-
-
 /* Exported variables --------------------------------------------------------*/
 #if (CFG_BUTTON_SUPPORTED == 1)
 typedef struct
@@ -95,6 +82,15 @@ typedef struct
   uint8_t State; //1 pushed
 } ButtonDesc_t;
 #endif /* (CFG_BUTTON_SUPPORTED == 1) */
+
+#if (CFG_JOYSTICK_SUPPORTED == 1)
+#ifdef CFG_BSP_ON_THREADX
+extern TX_SEMAPHORE         JoystickUpSemaphore, JoystickRightSemaphore, JoystickDownSemaphore, JoystickLeftSemaphore, JoystickSelectSemaphore;
+#endif /* CFG_BSP_ON_THREADX */
+#ifdef CFG_BSP_ON_FREERTOS
+extern osSemaphoreId_t      JoystickUpSemaphore, JoystickRightSemaphore, JoystickDownSemaphore, JoystickLeftSemaphore, JoystickSelectSemaphore, JoystickNoneSemaphore, JoystickNoneThread;
+#endif /* CFG_BSP_ON_FREERTOS */
+#endif /* (CFG_JOYSTICK_SUPPORTED == 1) */
 
 /* Exported macros ------------------------------------------------------------*/
 

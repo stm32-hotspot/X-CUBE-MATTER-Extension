@@ -20,6 +20,10 @@
 #ifndef APP_SYS_H
 #define APP_SYS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Exported constants --------------------------------------------------------*/
 
 /* The RADIO_DEEPSLEEP_WAKEUP_TIME_US macro allows to define when the system
@@ -34,9 +38,13 @@
 /* USER CODE END EC */
 
 /* Exported functions prototypes ---------------------------------------------*/
+
 void APP_SYS_BLE_EnterDeepSleep(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* APP_SYS_H */

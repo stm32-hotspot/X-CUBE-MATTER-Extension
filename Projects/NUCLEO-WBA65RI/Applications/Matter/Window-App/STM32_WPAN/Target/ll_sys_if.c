@@ -188,15 +188,22 @@ void ll_sys_schedule_bg_process_isr(void)
   */
 void ll_sys_config_params(void)
 {
+/* USER CODE BEGIN ll_sys_config_params_0 */
+
+/* USER CODE END ll_sys_config_params_0 */
+
   /* Configure link layer behavior for low ISR use and next event scheduling method:
    * - SW low ISR is used.
    * - Next event is scheduled from ISR.
    */
   ll_intf_cmn_config_ll_ctx_params(USE_RADIO_LOW_ISR, NEXT_EVENT_SCHEDULING_FROM_ISR);
-  
   /* Apply the selected link layer sleep timer source */
   ll_sys_sleep_clock_source_selection();
-  
+
+/* USER CODE BEGIN ll_sys_config_params_1 */
+
+/* USER CODE END ll_sys_config_params_1 */
+
 #if (USE_TEMPERATURE_BASED_RADIO_CALIBRATION == 1)
   /* Initialize link layer temperature measurement background task */
   ll_sys_bg_temperature_measurement_init();
@@ -207,17 +214,20 @@ void ll_sys_config_params(void)
 
   /* Link Layer power table */
   ll_intf_cmn_select_tx_power_table(CFG_RF_TX_POWER_TABLE_ID);
+/* USER CODE BEGIN ll_sys_config_params_2 */
+
+/* USER CODE END ll_sys_config_params_2 */
 }
 
 #if (USE_TEMPERATURE_BASED_RADIO_CALIBRATION == 1)
 /**
- * @brief  Link Layer Temperature Measurement Task for FreeRTOS
+ * @brief  Temperature Measurement Task for FreeRTOS
  * @param
  * @retval None
  */
  static void LinkLayerTempMeasure_Task_Entry( void *argument )
 {
-  UNUSED( argument );
+  UNUSED(argument);
 #if HIGHWATERMARK
     UBaseType_t uxHighWaterMark;
     UBaseType_t lastHighWaterMark = 0;
@@ -267,6 +277,7 @@ void ll_sys_bg_temperature_measurement_init(void)
   {
     Error_Handler();
   }
+
 }
 
 /**
@@ -291,27 +302,30 @@ void ll_sys_bg_temperature_measurement(void)
 
 #endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
 
-#if (CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE == 0)
+
 uint8_t ll_sys_BLE_sleep_clock_accuracy_selection(void)
 {
   uint8_t BLE_sleep_clock_accuracy = 0;
+#if (CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE == 0)
   uint32_t RevID = LL_DBGMCU_GetRevisionID();
+#endif
   uint32_t linklayer_slp_clk_src = LL_RCC_RADIO_GetSleepTimerClockSource();
-  
+
   if(linklayer_slp_clk_src == LL_RCC_RADIOSLEEPSOURCE_LSE)
   {
-    /* LSE selected as Link Layer sleep clock source. 
-       Sleep clock accuracy is different regarding the WBA device ID and revision 
+    /* LSE selected as Link Layer sleep clock source.
+       Sleep clock accuracy is different regarding the WBA device ID and revision
      */
+#if (CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE == 0)
 #if defined(STM32WBA52xx) || defined(STM32WBA54xx) || defined(STM32WBA55xx)
     if(RevID == REV_ID_A)
     {
       BLE_sleep_clock_accuracy = STM32WBA5x_REV_ID_A_SCA_RANGE;
-    } 
+    }
     else if(RevID == REV_ID_B)
     {
       BLE_sleep_clock_accuracy = STM32WBA5x_REV_ID_B_SCA_RANGE;
-    } 
+    }
     else
     {
       /* Revision ID not supported, default value of 500ppm applied */
@@ -323,22 +337,24 @@ uint8_t ll_sys_BLE_sleep_clock_accuracy_selection(void)
 #else
     UNUSED(RevID);
 #endif /* defined(STM32WBA52xx) || defined(STM32WBA54xx) || defined(STM32WBA55xx) */
+#else /* CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE */
+    BLE_sleep_clock_accuracy = CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE;
+#endif /* CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE */
   }
   else
   {
     /* LSE is not the Link Layer sleep clock source, sleep clock accurcay default value is 500 ppm */
     BLE_sleep_clock_accuracy = STM32WBA5x_DEFAULT_SCA_RANGE;
   }
-  
+
   return BLE_sleep_clock_accuracy;
 }
-#endif /* CFG_RADIO_LSE_SLEEP_TIMER_CUSTOM_SCA_RANGE */
 
 void ll_sys_sleep_clock_source_selection(void)
 {
   uint16_t freq_value = 0;
   uint32_t linklayer_slp_clk_src = LL_RCC_RADIOSLEEPSOURCE_NONE;
-  
+
   linklayer_slp_clk_src = LL_RCC_RADIO_GetSleepTimerClockSource();
   switch(linklayer_slp_clk_src)
   {

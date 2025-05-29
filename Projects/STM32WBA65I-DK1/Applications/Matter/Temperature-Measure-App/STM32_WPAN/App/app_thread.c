@@ -64,7 +64,7 @@
 
 /* USER CODE BEGIN PD */
 #define C_RESSOURCE                     "light"
-
+#define THREAD_LINK_POLL_PERIOD_MS (5000) /**< 5s */
 
 
 /* USER CODE END PD */
@@ -89,7 +89,7 @@ static void APP_THREAD_ProcessUart(void);
 
 /* Private variables -----------------------------------------------*/
 otInstance * PtOpenThreadInstance;
-
+static otLinkModeConfig OT_LinkMode = {0};
 /* USER CODE BEGIN PV */
 
 
@@ -464,6 +464,40 @@ static void APP_THREAD_DeviceConfig(void)
 
   otPlatRadioEnableSrcMatch(PtOpenThreadInstance, true);
 
+  /* After reaching the child or router state, the system
+   *   a) sets the 'sleepy end device' mode
+   *   b) perform a Thread stop
+   *   c) perform a Thread start.
+   *
+   *  NOTE : According to the Thread specification, it is necessary to set the
+   *         mode before starting Thread.
+   *
+   * A Child that has attached to its Parent indicating it is an FTD MUST NOT use Child UpdateRequest
+   * to modify its mode to MTD.
+   * As a result, you need to first detach from the network before switching from FTD to MTD at runtime,
+   * then reattach.
+   *
+   */
+  /* Set the pool period . It means that when the device will enter in 'sleepy
+   * end device' mode, it will send an ACK_Request every
+   * THREAD_LINK_POLL_PERIOD_MS.
+   * This message will act as keep alive message.
+   */
+  /* Set the sleepy end device mode */
+  OT_LinkMode.mRxOnWhenIdle = 0;
+  OT_LinkMode.mDeviceType = 0; /* 0: MTD, 1: FTD */
+  OT_LinkMode.mNetworkData = 1;
+
+  error = otThreadSetLinkMode(PtOpenThreadInstance,OT_LinkMode);
+  if (error != OT_ERROR_NONE)
+  {
+    APP_THREAD_Error(ERR_THREAD_LINK_MODE,error);
+  }
+  error = otLinkSetPollPeriod(PtOpenThreadInstance, THREAD_LINK_POLL_PERIOD_MS);
+  if (error != OT_ERROR_NONE)
+  {
+    APP_THREAD_Error(ERR_THREAD_POLL_MODE,error);
+  }
 
   /* USER CODE BEGIN DEVICECONFIG */
 

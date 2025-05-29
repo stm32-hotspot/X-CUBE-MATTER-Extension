@@ -29,7 +29,9 @@
 #include <app/clusters/ota-requestor/DefaultOTARequestor.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestorDriver.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestorStorage.h>
+
 #include <platform/stm32/stm32wba/OTAImageProcessorImpl.h>
+
 #include <platform/stm32/stm32wba/FactoryDataProvider.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestorUserConsent.h>
 

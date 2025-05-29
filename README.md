@@ -12,6 +12,7 @@ Examples in this package (* are available in the original package):
   * Temperature sensor
   * Thermostat
   * Window covering *
+  * Matter bridge *
 
 Each example project has its own Readme.txt file with description and details on how to operate the application.
 
@@ -25,7 +26,7 @@ Each example project has its own Readme.txt file with description and details on
    * A full set of software projects (basic examples, applications, and demonstrations) for each board provided for this STM32 series.
    * A development with three Toolchains and Compilers (IAR Embedded Workbench for ARM (EWARM), RealView Microcontroller Development Kit (MDK-ARM), and STM32CubeIDE).
 
-The **X-CUBE-MATTER expansion Package** projects are directly running on the STM32WB, STM32WBA6 series boards. You can find in each Projects/Board name directories a set of software projects (Applications, Demonstration, Examples).
+The **X-CUBE-MATTER expansion Package** projects are directly running on the STM32WB, STM32WBA6 and STM32H7 series boards. You can find in each Projects/Board name directories a set of software projects (Applications, Demonstration, Examples).
 
 ## Release note
 
@@ -37,3 +38,5 @@ Details about the content of this release are available in the release note.
   * STM32WBA
     * STM32WBA65I-DK1
     * NUCLEO-WBA65RI
+  * STM32H7
+    * NUCLEO-H753ZI

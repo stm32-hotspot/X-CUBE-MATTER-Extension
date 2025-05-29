@@ -7,7 +7,38 @@ chip::app::Clusters::Identify::EffectIdentifierEnum sIdentifyEffect = chip::app:
 /**********************************************************
  * Identify Callbacks
  *********************************************************/
+bool IdentifyLedIsOn = false;
 
+void OnIdentifyToggle(chip::System::Layer * systemLayer, void * appState)
+{
+	if (IdentifyLedIsOn)
+	{
+		BSP_LED_Off(LED_BLUE);
+		IdentifyLedIsOn = false;
+	}
+	else
+	{
+		BSP_LED_On(LED_BLUE);
+		IdentifyLedIsOn = true;
+	}
+	(void) chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::Milliseconds32(500), OnIdentifyToggle, appState);
+
+}
+
+void OnIdentifyStart(Identify * identify)
+{
+	ChipLogProgress(Zcl, "onIdentifyStart");
+	BSP_LED_On(LED_BLUE);
+	IdentifyLedIsOn = true;
+	(void) chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::Milliseconds32(500), OnIdentifyToggle, identify);
+}
+
+void OnIdentifyStop(Identify * identify)
+{
+	ChipLogProgress(Zcl, "onIdentifyStop");
+	(void) chip::DeviceLayer::SystemLayer().CancelTimer(OnIdentifyToggle, identify);
+	BSP_LED_Off(LED_BLUE);
+}
 
 
 
@@ -53,8 +84,8 @@ void OnTriggerIdentifyEffectCompleted(chip::System::Layer * systemLayer, void * 
 
  static Identify gIdentify = {
      chip::EndpointId{ 1 },
-     [](Identify *) { ChipLogProgress(Zcl, "onIdentifyStart"); },
-     [](Identify *) { ChipLogProgress(Zcl, "onIdentifyStop"); },
+     OnIdentifyStart,
+	 OnIdentifyStop,
 	 chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator,
 	 OnTriggerIdentifyEffect,
  };

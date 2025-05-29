@@ -29,6 +29,7 @@
 #include "stm_logging.h"
 #include "app_conf.h"
 #include "stm32_lpm.h"
+#include "FreeRTOS.h"
 #include "cmsis_os.h"
 #include "queue.h"
 

@@ -165,7 +165,7 @@ void ll_sys_bg_process_init(void)
   */
 void ll_sys_schedule_bg_process(void)
 {
-  osSemaphoreRelease(LinkLayerSemaphore);  
+   osSemaphoreRelease(LinkLayerSemaphore);
 }
 
 /**
@@ -178,6 +178,7 @@ void ll_sys_schedule_bg_process_isr(void)
 
   LINKLAYER_PLAT_DisableIRQ(); // New entrer in critical section
   osSemaphoreRelease(LinkLayerSemaphore);
+
   LINKLAYER_PLAT_EnableIRQ();
 }
 

@@ -55,24 +55,7 @@
 #include <platform/ThreadStackManager.h>
 #endif
 
-#ifdef STM32WBA55xx
-#ifdef CFG_BSP_ON_DISCOVERY
-#include "stm32wba55g_discovery.h"
-#endif /* CFG_BSP_ON_DISCOVERY */
-#endif /* STM32WBA55xx */
-
-#ifdef STM32WBA65xx
-#ifdef CFG_BSP_ON_DISCOVERY
-#include "stm32wba65i_discovery.h"
-#endif /* CFG_BSP_ON_DISCOVERY */
-#endif /* STM32WBA65xx */
-
-#ifdef CFG_BSP_ON_CEB
-#include "b_wba5m_wpan.h"
-#endif /* CFG_BSP_ON_CEB */
-#ifdef CFG_BSP_ON_NUCLEO
 #include "stm32wbaxx_nucleo.h"
-#endif /* CFG_BSP_ON_CEB */
 #include "app_conf.h"
 #include "app_bsp.h"
 
@@ -147,7 +130,11 @@ CHIP_ERROR AppTask::Init() {
 
     ThreadStackMgr().InitThreadStack();
 
-    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router);
+#if ( CHIP_DEVICE_CONFIG_ENABLE_SED == 1)
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice);
+#else
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_FullEndDevice);
+#endif
 
     PlatformMgr().AddEventHandler(MatterEventHandler, 0);
 
@@ -392,7 +379,6 @@ void AppTask::MatterEventHandler(const ChipDeviceEvent *event, intptr_t) {
         sFabricNeedSaved = true;
         sHaveFabric = true;
         TempSensMgr().StartInternalMeasurement();
-        // check if ble is on, since before save in nvm we need to stop m0, Better to write in nvm when m0 is less busy
         if (sHaveBLEConnections == false) {
             sFabricNeedSaved = false; // put to false to avoid save in nvm 2 times
             AppEvent event;

@@ -33,6 +33,8 @@
 #endif
 
 #include "STM32Config.h"
+#include "FreeRTOS.h"
+#include "timers.h"
 
 namespace chip {
 namespace DeviceLayer {
@@ -53,8 +55,11 @@ public:
     CHIP_ERROR StoreRebootCount(uint32_t rebootCount) override;
     CHIP_ERROR GetTotalOperationalHours(uint32_t & totalOperationalHours) override;
     CHIP_ERROR StoreTotalOperationalHours(uint32_t totalOperationalHours) override;
+    CHIP_ERROR GetPrimaryMACAddress(MutableByteSpan buf) override;
     // This returns an instance of this class.
     static ConfigurationManagerImpl & GetDefaultInstance();
+
+    static void UpdateTotalOperationalHours(intptr_t arg);
 
 private:
     // ===== Members that implement the ConfigurationManager public interface.
@@ -87,6 +92,9 @@ private:
     static void DoFactoryReset(intptr_t arg);
     bool bootReasonRead;
     BootReasonType matterBootCause;
+    static uint32_t mTotalOperationalHours;
+    static TimerHandle_t sTotalOperationalHoursTimer;
+    static void TimerTotalOperationalHoursEventHandler(TimerHandle_t xTimer);
 };
 
 /**

@@ -730,7 +730,7 @@ typedef enum
 /******************************************************************************
  * versions
  ******************************************************************************/
-#define X_CUBE_MATTER_VERSION "1.4.0"
+#define X_CUBE_MATTER_VERSION "1.4.1"
 #define PRODUCT_NAME "GenericSwitch"
 #define VENDOR_NAME "STMicroelectronics"
 #define MATTER_SDK_VERSION "1.4"

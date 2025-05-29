@@ -15,17 +15,13 @@ MATTER MCUboot configuration:
   - Primary and secondary slots are used.
   - "Overwrite" method (not "swap") is usedd to save 64Kb.
   - Secure and Non-*Secure Data slots are not used.
-The external loader is disabled (MCUBOOT_EXT_LOADER).
 
 Boot is performed through OEMiROT boot path after authenticity and the integrity checks of the project firmware and project data
 images.
 
 This project is composed of two sub-projects:
-
-- One for the secure application part (Project_s)
-
-- One for the non-secure application part (Project_ns) : MATTER Ligthing-App
-
+  - one for the secure application part (Project_s)
+  - one for the non-secure application part (Project_ns) : MATTER Ligthing-App
 
 Please remember that on system with security enabled, the system always boots in secure and
 the secure application is responsible for launching the non-secure application. When the secure application is started the MPU
@@ -34,10 +30,72 @@ any malicious code execution from an unauthorised area (RAM, out of execution sl
 application to adapt the security configuration to its needs. In this example, the MPU is simply disabled.
 
 The non-secure application is the MATTER Lighting-App used in the OEMiROT environment.
-This allows Secure Boot and Secure Firmware Update using Matter OTA procedure.
+This allows Secure Boot and Secure Firmware Update using MATTER OTA procedure.
 Refer to Lighting-App for functional description.
 
-### <b>Memory mapping</b>
+On the STM32WBA65I-DK1 board, 2 options are offered:
+
+  - with external FLASH (EEPROM M96P32) support (default usecase): 
+    In this case, only the primary slots are stored in internal flash, secondary slots are store on EEPROM.
+    This allows for a larger slot size dedicated to the MATTER application.
+  
+  - with internal FLASH only:
+    In this case, the primary and secondary slots are stored in internal flash.
+    Only the release version of the MATTER application can then be used
+
+
+Configuration to apply for External FLASH support:
+==================================================
+In this configuration, the OEMiROT_Appli_TrustZone/NonSecure project can be compiled in Debug or Release mode.
+ * OEMiROT_Boot project, in the file flash_layout.h:
+    - OEMIROT_EXTERNAL_FLASH_ENABLE is defined in flash_layout.h
+	- #define FLASH_NS_PARTITION_SIZE (0x1C6000) {(line 236, below "Value for MATTER..." comment)
+ * OEMiROT_Appli_TrustZone project/NonSecure (MATTER application), in the file app_conf.h:
+    - OTA_EXTERNAL_FLASH_ENABLE is set to 1 
+
+
+Configuration to apply for Internal FLASH only:
+===============================================
+In this configuration, the OEMiROT_Appli_TrustZone/NonSecure project can be compiled in Release mode only.
+ * OEMiROT_Boot project, in the file flash_layout.h:
+    - OEMIROT_EXTERNAL_FLASH_ENABLE is not defined in flash_layout.h (comment the line)
+	- #define FLASH_NS_PARTITION_SIZE (0xE0000) {(line 236, below "Value for MATTER..." comment)
+ * OEMiROT_Appli_TrustZone project/NonSecure (MATTER application), in the file app_conf.h:
+    - OTA_EXTERNAL_FLASH_ENABLE is set to 0
+
+
+### <b>Memory mapping with External FLASH support </b>
+
+start address | size        | size (KB) | content
+--------------+-------------+-----------+---------------------------------------------
+0x0800.0000   | 0x0000.2000 | 8kb       | "HASH REF"
+--------------+-------------+-----------+---------------------------------------------
+0x0800.2000   | 0x0000.2000 | 8kb       | "BL2NVCNT"
+--------------+-------------+-----------+---------------------------------------------
+0X0800.4000   | 0x0000.2000 | 8kb       | "integrated perso data"
+--------------+-------------+-----------+---------------------------------------------
+0X0800.6000   | 0x0001.0000 | 64kb      | "OEMIROT BOOT"
+--------------+-------------+-----------+---------------------------------------------
+0X0801.6000   | 0x0000.2000 | 8kb       | "HPD activation code"
+--------------+-------------+-----------+---------------------------------------------
+0X0801.8000   | 0x0000.6000 | 24kb      | "Secure Image Primary Slot (Area 0)"
+--------------+-------------+-----------+---------------------------------------------
+0X0801.E000   | 0x001C.6000 | 1816kb    | "Non-Secure Image Primary Slot (Area 1)"
+--------------+-------------+-----------+---------------------------------------------
+0X081E.4000   | 0x0000.8000 | 32kb      | "NVM"
+--------------+-------------+-----------+---------------------------------------------
+0X081E.C000   | 0x0000.F000 | 60kb      | "DATA FACTORY"
+--------------+-------------+-----------+---------------------------------------------
+0X081F.B000   | 0x0000.3000 | 12kb      | "free space"
+--------------+-------------+-----------+---------------------------------------------
+0X081F.E000   | 0x0000.2000 | 8kb       | "reserved"
+--------------+-------------+-----------+---------------------------------------------
+
+Secondary slots are stored on EEPROM:
+  - "Secure Image Secondary Slot (Area 2)" (size=0x0000.6000, 24kb) 
+  - "Non-Secure Image Secondary Slot (Area 3)" (size=0x001C.6000, 896kb)
+
+### <b>Memory mapping with Internal FLASH only </b>
 
 start address | size        | size (KB) | content
 --------------+-------------+-----------+---------------------------------------------

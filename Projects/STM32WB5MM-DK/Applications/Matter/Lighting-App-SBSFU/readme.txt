@@ -8,7 +8,7 @@
   * @brief   Description of the Lighting App SBSFU application for Matter OTA Framework
   ********************************************************************************************
   *
-  * Copyright (c) 2019-2024 STMicroelectronics.
+  * Copyright (c) 2019-2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file

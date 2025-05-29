@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -26,7 +26,9 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "app_conf.h"
-#include "stm32_rtos.h"
+#if (CFG_LCD_SUPPORTED == 1)
+#define LCD1 (0)
+#endif /* (CFG_LCD_SUPPORTED == 1) */
 
 #ifdef STM32WBA55xx
 #ifdef CFG_BSP_ON_DISCOVERY
@@ -38,10 +40,9 @@ extern "C" {
 #endif /* CFG_BSP_ON_DISCOVERY */
 #endif /* STM32WBA55xx */
 
-#ifdef STM32WBA65xx
+#ifdef STM32WBA65xx  
 #ifdef CFG_BSP_ON_DISCOVERY
 #include "stm32wba65i_discovery.h"
-#include "stm32wba65i_discovery_bus.h"
 #if (CFG_LCD_SUPPORTED == 1)
 #include "stm32wba65i_discovery_lcd.h"
 #include "stm32_lcd.h"
@@ -56,45 +57,13 @@ extern "C" {
 #include "stm32wbaxx_nucleo.h"
 #endif /* CFG_BSP_ON_CEB */
 
-#include "stm32_timer.h"
-
 /* Private includes ----------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
 
 /* Exported constants --------------------------------------------------------*/
-#if (CFG_LCD_SUPPORTED == 1)
-#define    LCD1                           (0u)
-#endif /* (CFG_LCD_SUPPORTED == 1) */
-  
-#if (defined CFG_BSP_ON_DISCOVERY) && (defined STM32WBA65xx)
-/* No Led Blue on Discovery for STM32WBA65I. Replaced by Red Led */
-#define    LED_BLUE                       LED_RED
-#endif /* (defined CFG_BSP_ON_DISCOVERY) && (defined STM32WBA65xx) */
-
-#if (CFG_JOYSTICK_SUPPORTED == 1)
-#define JOYSTICK_USE_AS_JOYSTICK          (0u)    /* When Joystick is not 'none', call according 'Joystick Action' every JOYSTICK_PRESS_SAMPLE_MS. */
-#define JOYSTICK_USE_AS_BUTTON            (1u)    /* When Joystick is pressed, call according 'Joystick Action' one time. */
-#define JOYSTICK_USE_AS_BUTTON_WITH_TIME  (2u)    /* When Joystick is pressed, it wait the release or the end of  JOYSTICK_LONG_PRESS_THRESHOLD_MS 
-                                                     before call according 'Joystick Action'. */
-#define JOYSTICK_USE_AS_CHANGE            (3u)    /* When Joystcik is pressed according 'Joystick Action' is called. When the Joystick is released, 'JoystickNoneAction' is called. */
-#define JOYSTICK_USE_AS_MATTER            (4u)    /* When Joystick is pressed, according 'Joystick Action' is called. When the Joystick is released or the end 
-                                                     of JOYSTICK_LONG_PRESS_THRESHOLD_MS occurs, according 'Joystick Action' is called (same as when pressed). */
-#endif /* (CFG_JOYSTICK_SUPPORTED == 1) */
-
 
 /* Exported variables --------------------------------------------------------*/
-#if (CFG_BUTTON_SUPPORTED == 1)
-typedef struct
-{
-  Button_TypeDef      button;
-  UTIL_TIMER_Object_t longTimerId;
-  uint8_t             longPressed;
-  uint8_t             wasLongPressed;
-  uint32_t            waitingTime;
-  uint8_t State; //1 pushed
-} ButtonDesc_t;
-#endif /* (CFG_BUTTON_SUPPORTED == 1) */
 
 /* Exported macros ------------------------------------------------------------*/
 
@@ -109,15 +78,13 @@ void      APP_BSP_LedInit                 ( void );
 
 #endif /* (CFG_LED_SUPPORTED == 1) */
 #if (CFG_LCD_SUPPORTED == 1)
-void      APP_BSP_LcdInit                 ( void );
+void      APP_BSP_LcdInit             ( void );
 
 #endif /* (CFG_LCD_SUPPORTED == 1) */
 #if ( CFG_BUTTON_SUPPORTED == 1 )
 void      APP_BSP_ButtonInit              ( void );
 
-uint8_t   APP_BSP_ButtonIsPressed         ( uint16_t btnIdx );
 uint8_t   APP_BSP_ButtonIsLongPressed     ( uint16_t btnIdx );
-uint8_t   APP_BSP_ButtonWasLongPressed   ( uint16_t btnIdx );
 void      APP_BSP_SetButtonIsLongPressed  ( uint16_t btnIdx );
 
 void      APP_BSP_Button1Action           ( void );
@@ -129,20 +96,18 @@ void      BSP_PB_Callback                 ( Button_TypeDef button );
 #endif /* ( CFG_BUTTON_SUPPORTED == 1 )  */
 #if ( CFG_JOYSTICK_SUPPORTED == 1 )
 void      APP_BSP_JoystickInit            ( void );
-uint8_t   APP_BSP_JoystickIsLongPressed   ( void );
-uint8_t   APP_BSP_JoystickIsShortReleased ( void );
-uint8_t   APP_BSP_JoystickIsInitialPress  ( void );
 
 void      APP_BSP_JoystickUpAction        ( void );
 void      APP_BSP_JoystickRightAction     ( void );
 void      APP_BSP_JoystickDownAction      ( void );
 void      APP_BSP_JoystickLeftAction      ( void );
 void      APP_BSP_JoystickSelectAction    ( void );
-void      APP_BSP_JoystickNoneAction      ( void );
 
 void      BSP_JOY_Callback                ( JOY_TypeDef joyNb, JOYPin_TypeDef joyPin );
 
 #endif /* CFG_JOYSTICK_SUPPORTED */
+
+
 
 #ifdef __cplusplus
 } /* extern "C" */

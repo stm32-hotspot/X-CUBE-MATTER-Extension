@@ -2,13 +2,13 @@
   @page Secure Boot and Secure Firmware Update Demo Application
 
   @verbatim
-  ******************** (C) COPYRIGHT 2017 STMicroelectronics *******************
+  ******************** (C) COPYRIGHT 2025 STMicroelectronics *******************
   * @file    readme.txt
   * @brief   This application shows Secure Boot and Secure Firmware Update example.
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2017 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file in

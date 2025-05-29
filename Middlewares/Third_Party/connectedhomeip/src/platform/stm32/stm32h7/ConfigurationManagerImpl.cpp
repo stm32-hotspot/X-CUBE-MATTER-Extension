@@ -45,10 +45,35 @@
   #include "stm32h7xx_hal_rcc.h"
 #endif
 
+extern "C" uint8_t stm32_GetMACAddr(uint8_t *buf_data, size_t buf_size);
+
 namespace chip {
 namespace DeviceLayer {
 
 using namespace ::chip::DeviceLayer::Internal;
+
+#define TOTAL_OPERATIONAL_HOURS_PERIOD (60 * 60 * 1000) // every hour in milliseconds
+uint32_t ConfigurationManagerImpl::mTotalOperationalHours = 0U;
+TimerHandle_t ConfigurationManagerImpl::sTotalOperationalHoursTimer;
+
+void ConfigurationManagerImpl::TimerTotalOperationalHoursEventHandler(TimerHandle_t xTimer)
+{
+    // Do not increment total operational hours if the value is going to overflow UINT32.
+    mTotalOperationalHours = (mTotalOperationalHours < UINT32_MAX) ? (mTotalOperationalHours + 1U) : UINT32_MAX;
+    PlatformMgr().ScheduleWork(ConfigurationManagerImpl().UpdateTotalOperationalHours);
+}
+
+void ConfigurationManagerImpl::UpdateTotalOperationalHours(intptr_t arg)
+{
+    CHIP_ERROR err;
+    (void)arg;
+
+    err = ConfigurationMgrImpl().StoreTotalOperationalHours(mTotalOperationalHours);
+    if (err != CHIP_NO_ERROR)
+    {
+        ChipLogError(DeviceLayer, "Store total operational hours NOK !");
+    }
+}
 
 ConfigurationManagerImpl & ConfigurationManagerImpl::GetDefaultInstance()
 {
@@ -61,27 +86,53 @@ CHIP_ERROR ConfigurationManagerImpl::Init()
     CHIP_ERROR err;
 
     bootReasonRead = false;
-    if (STM32Config::ConfigValueExists(STM32Config::kCounterKey_RebootCount))
+
+    err = STM32Config::Init();
+    SuccessOrExit(err);
+
+    if (STM32Config::ConfigValueExists(STM32Config::kCounterKey_RebootCount) == false)
+    {
+        // The first boot after factory reset of the Node.
+        err = StoreRebootCount(1U);
+        SuccessOrExit(err);
+    }
+    else
     {
         uint32_t rebootCount;
         err = GetRebootCount(rebootCount);
         SuccessOrExit(err);
 
         // Do not increment reboot count if the value is going to overflow UINT32.
-        err = StoreRebootCount(rebootCount < UINT16_MAX ? rebootCount + 1 : rebootCount);
+        err = StoreRebootCount((rebootCount < UINT32_MAX) ? (rebootCount + 1U) : rebootCount);
+        SuccessOrExit(err);
+    }
+
+    if (STM32Config::ConfigValueExists(STM32Config::kCounterKey_TotalOperationalHours) == false)
+    {
+        err = StoreTotalOperationalHours(mTotalOperationalHours);
         SuccessOrExit(err);
     }
     else
     {
-        // The first boot after factory reset of the Node.
-        err = StoreRebootCount(1);
+        err = GetTotalOperationalHours(mTotalOperationalHours);
         SuccessOrExit(err);
     }
-    
-    if (!STM32Config::ConfigValueExists(STM32Config::kCounterKey_TotalOperationalHours))
+
+    // Create and Start the timer to manage TotalOperationalHours increment
+    sTotalOperationalHoursTimer = xTimerCreate("TotalOperationalHoursTimer", // Just a text name, not used by the RTOS kernel
+                                               pdMS_TO_TICKS(TOTAL_OPERATIONAL_HOURS_PERIOD), // == default timer period (mS)
+                                               pdTRUE, //timer will auto-reload themselves when they expire
+                                               (void *)this, // init timer id
+                                               TimerTotalOperationalHoursEventHandler); // timer callback handler
+    if (sTotalOperationalHoursTimer == nullptr)
     {
-        err = StoreTotalOperationalHours(0);
-        SuccessOrExit(err);
+        ChipLogError(DeviceLayer, "TotalOperationalHours timer creation NOK !")
+        SuccessOrExit(CHIP_ERROR_NO_MEMORY);
+    }
+    if (xTimerStart(sTotalOperationalHoursTimer, 0) == pdFAIL)
+    {
+        ChipLogError(DeviceLayer, "TotalOperationalHours timer start NOK !")
+        SuccessOrExit(CHIP_ERROR_INTERNAL);
     }
 
     // Initialize the generic implementation base class.
@@ -120,6 +171,36 @@ bool ConfigurationManagerImpl::CanFactoryReset()
     return true;
 }
 
+CHIP_ERROR ConfigurationManagerImpl::GetPrimaryMACAddress(MutableByteSpan buf)
+{
+    CHIP_ERROR err;
+
+    // Copies the primary MAC into a mutable span, which must be of size kPrimaryMACAddressLength.
+    // Upon success, the span will be reduced to the size of the MAC address being returned, which
+    // can be less than kPrimaryMACAddressLength on a device that supports Thread.
+    if (buf.size() >= ConfigurationManager::kPrimaryMACAddressLength)
+    {
+        uint8_t macAddrLength;
+        memset(buf.data(), 0, buf.size());
+        macAddrLength = stm32_GetMACAddr(buf.data(), buf.size());
+        if (macAddrLength != 0U)
+        {
+            buf.reduce_size(ConfigurationManager::kPrimaryMACAddressLength);
+            err = CHIP_NO_ERROR;
+        }
+        else
+        {
+            err = CHIP_ERROR_NOT_IMPLEMENTED;
+        }
+    }
+    else
+    {
+        err = CHIP_ERROR_BUFFER_TOO_SMALL;
+    }
+
+    return err;
+}
+
 void ConfigurationManagerImpl::InitiateFactoryReset()
 {
     PlatformMgr().ScheduleWork(DoFactoryReset);
@@ -127,7 +208,7 @@ void ConfigurationManagerImpl::InitiateFactoryReset()
 
 CHIP_ERROR ConfigurationManagerImpl::GetBootReason(uint32_t & bootReason)
 {
-    CHIP_ERROR err  = CHIP_NO_ERROR;
+    CHIP_ERROR err = CHIP_NO_ERROR;
 
 #if defined(STM32H753xx)
     // rebootCause is obtained at bootup.
@@ -185,7 +266,7 @@ CHIP_ERROR ConfigurationManagerImpl::GetBootReason(uint32_t & bootReason)
 #else
     matterBootCause = BootReasonType::kUnspecified;
     err = CHIP_ERROR_NOT_IMPLEMENTED;
-#endif
+#endif /* defined(STM32H753xx) */
 
     bootReason = to_underlying(matterBootCause);
 

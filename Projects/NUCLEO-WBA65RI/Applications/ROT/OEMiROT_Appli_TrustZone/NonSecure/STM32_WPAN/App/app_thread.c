@@ -45,7 +45,7 @@
 
 /* Private includes -----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_bsp.h"
+#include "stm32wba65i_discovery.h"
 #include "data_transfer.h"
 #include "udp.h"
 

@@ -25,7 +25,7 @@
 #include "AppEvent.h"
 #include "AppTask.h"
 #include "flash_wb.h"
-
+#include "main.h"
 #if (OTA_SUPPORT == 1)
 #include "ota.h"
 #endif /* (OTA_SUPPORT == 1) */
@@ -129,7 +129,7 @@ CHIP_ERROR AppTask::Init() {
 
     ThreadStackMgr().InitThreadStack();
 
-    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router);
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_FullEndDevice);
 
     PlatformMgr().AddEventHandler(MatterEventHandler, 0);
 
@@ -200,6 +200,7 @@ CHIP_ERROR AppTask::InitMatter() {
 
 void AppTask::AppTaskMain(void *pvParameter) {
     AppEvent event;
+
 #if (CFG_LCD_SUPPORTED == 1)
     APP_BSP_LcdInit();
     BSP_LCD_Clear(LCD1,LCD_COLOR_BLACK);
@@ -276,7 +277,7 @@ void AppTask::ButtonEventHandler(ButtonDesc_t *Button) {
 
 
     if (Button->button == B1) { /* JOY_UP */
-            // Hand off to Functionality handler - depends on duration of press
+         // Hand off to Functionality handler - depends on duration of press
     	 AppEvent event;
     	 event.Type = AppEvent::kEventType_Timer;
     	 event.Handler = UpdateNvmEventHandler;
@@ -446,7 +447,7 @@ void AppTask::MatterEventHandler(const ChipDeviceEvent *event, intptr_t) {
     case DeviceEventType::kCommissioningComplete: {
         sFabricNeedSaved = true;
         sHaveFabric = true;
-        // check if ble is on, since before save in nvm we need to stop m0, Better to write in nvm when m0 is less busy
+
         if (sHaveBLEConnections == false) {
             sFabricNeedSaved = false; // put to false to avoid save in nvm 2 times
             AppEvent event;

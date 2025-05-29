@@ -25,7 +25,7 @@
 
 #include "STM32CHIPConfig.h"
 #include <string.h>
-#include "NVM_implement.h"
+#include "stm32_nvm_implement.h"
 
 namespace chip {
 namespace DeviceLayer {

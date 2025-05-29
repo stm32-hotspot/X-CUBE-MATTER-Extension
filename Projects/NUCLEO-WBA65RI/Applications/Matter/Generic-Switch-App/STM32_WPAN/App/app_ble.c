@@ -36,9 +36,11 @@
 #include "simple_nvm_arbiter.h"
 #include "custom_stm.h"
 #include "app_matter.h"
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
+#include "CHIPProjectConfig.h"
+#if (CONFIG_STM32_FACTORY_DATA_ENABLE == 1)
+#include "stm32_factorydata.h"
+#endif /* CONFIG_STM32_FACTORY_DATA_ENABLE */
 
-#endif
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -152,9 +154,7 @@ typedef struct {
 /* USER CODE BEGIN PD */
 #define ADV_TIMEOUT_MS                 (60 * 1000)
 
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
-#define LED_ON_TIMEOUT                 (500)
-#endif          
+      
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -187,8 +187,14 @@ static const uint8_t a_GapDeviceName[] = { 'S', 'T', '_', 'W', 'B', 'A', '_',
 		'M', 'A', 'T', 'T', 'E', 'R' }; /* Gap Device Name */
 
 /* Advertising Data */
-// ADV for matter
-uint8_t a_AdvData[15] = { 0x02, 0x01, 0x06, 0x0B, 0x16, 0xF6, 0xFF, 0x00, 0x00, 0x0F, 0xF1, 0xFF, 0x04, 0x80, 0x00, };
+/* ADV for matter */
+/* Byte 8 to 13 to be overwritten with default or Factory Data value */
+/* Byte 8-9  : Discriminator */
+/* Byte 10-11: VendorID      */
+/* Byte 12-13: ProductID     */
+
+uint8_t a_AdvData[15] = { 0x02, AD_TYPE_FLAGS, 0x06,
+		                  0x0B, AD_TYPE_SERVICE_DATA, 0xF6, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 uint64_t buffer_nvm[CFG_BLEPLAT_NVM_MAX_SIZE] = { 0 };
 
@@ -246,9 +252,7 @@ static void BleStack_Task_Entry(void *thread_input);
 /* USER CODE BEGIN PFP */
 static void fill_advData(uint8_t *p_adv_data, uint8_t tab_size,
 		const uint8_t *p_bd_addr);
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
-static void Switch_OFF_Led(void *arg);
-#endif
+
 /* USER CODE END PFP */
 
 /* External variables --------------------------------------------------------*/
@@ -260,9 +264,7 @@ static void Switch_OFF_Led(void *arg);
 /* Functions Definition ------------------------------------------------------*/
 void APP_BLE_Init(void) {
 	/* USER CODE BEGIN APP_BLE_Init_1 */
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
-	tBleStatus ret = BLE_STATUS_INVALID_PARAMS;
-#endif
+
 	/* USER CODE END APP_BLE_Init_1 */
 
 	LST_init_head(&BleAsynchEventQueue);
@@ -347,17 +349,7 @@ void APP_BLE_Init(void) {
 
 		SVCCTL_InitCustomSvc();
 		/* USER CODE BEGIN APP_BLE_Init_3 */
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
-		ret = aci_hal_set_radio_activity_mask(0x0006);
-		if (ret != BLE_STATUS_SUCCESS) {
-			APP_DBG_MSG("  Fail   : aci_hal_set_radio_activity_mask command, result: 0x%2X\n", ret);
-		} else {
-			APP_DBG_MSG("  Success: aci_hal_set_radio_activity_mask command\n\r");
-		}
 
-		SwitchOffLedTimerId = osTimerNew(Switch_OFF_Led, osTimerOnce, NULL,
-				NULL);
-#endif
 
 		/* USER CODE END APP_BLE_Init_3 */
 
@@ -599,9 +591,7 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt) {
 		}
 		case ACI_HAL_END_OF_RADIO_ACTIVITY_VSEVT_CODE: {
 			/* USER CODE BEGIN RADIO_ACTIVITY_EVENT*/
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
-			// osTimerStart(SwitchOffLedTimerId, pdMS_TO_TICKS(LED_ON_TIMEOUT));
-#endif
+
 			/* USER CODE END RADIO_ACTIVITY_EVENT*/
 			break; /* ACI_HAL_END_OF_RADIO_ACTIVITY_VSEVT_CODE */
 		}
@@ -1325,7 +1315,7 @@ static void BLE_NvmCallback(SNVMA_Callback_Status_t CbkStatus) {
 static void fill_advData(uint8_t *p_adv_data, uint8_t tab_size,
 		const uint8_t *p_bd_addr) {
 	uint16_t i = 0;
-	uint8_t bd_addr_1, bd_addr_0;
+	//uint8_t bd_addr_1, bd_addr_0;
 	uint8_t ad_length, ad_type;
 
 	while (i < tab_size) {
@@ -1333,48 +1323,68 @@ static void fill_advData(uint8_t *p_adv_data, uint8_t tab_size,
 		ad_type = p_adv_data[i + 1];
 
 		switch (ad_type) {
-		case AD_TYPE_FLAGS:
+
+		case AD_TYPE_SERVICE_DATA:
+#if (CONFIG_STM32_FACTORY_DATA_ENABLE == 1)
+			 FACTORYDATA_StatusTypeDef err = DATAFACTORY_OK;
+			 uint32_t tlvDataLength = 0;
+			 uint16_t setupDiscriminator = 0;
+			 uint16_t vendorId = 0;
+			 uint16_t productId = 0;
+
+			 err = FACTORYDATA_GetValue(TAG_ID_SETUP_DISCRIMINATOR, (uint8_t *) &setupDiscriminator,
+					                    sizeof(setupDiscriminator), &tlvDataLength);
+
+			 if (err == DATAFACTORY_OK )
+			 {
+				 p_adv_data[i+5] = (uint8_t) (setupDiscriminator & 0xFF);
+				 p_adv_data[i+6] = (uint8_t) (setupDiscriminator >>8) ;
+			 }
+			 else
+			 {
+				 LOG_INFO_APP("Failed to get from Factory Data Discriminator.\n");
+			 }
+
+			 err = FACTORYDATA_GetValue(TAG_ID_VENDOR_ID, (uint8_t *) &vendorId,
+			 					                    sizeof(vendorId), &tlvDataLength);
+			 if (err == DATAFACTORY_OK )
+			 {
+				 p_adv_data[i+7] = (uint8_t) (vendorId & 0xFF);
+				 p_adv_data[i+8] = (uint8_t) (vendorId >>8);
+			 }
+			 else
+			 {
+				 LOG_INFO_APP("Failed to get from Factory Data VendorId.\n");
+			 }
+
+
+			 err = FACTORYDATA_GetValue(TAG_ID_PRODUCT_ID, (uint8_t *) &productId,
+			 					                    sizeof(productId), &tlvDataLength);
+			 if (err == DATAFACTORY_OK )
+			 {
+			     p_adv_data[i+9] = (uint8_t) (productId & 0xFF);
+			     p_adv_data[i+10] = (uint8_t) (productId >> 8);
+			 }
+			 else
+			 {
+				 LOG_INFO_APP("Failed to get from Factory Data ProductId.\n");
+			 }
+
+
+
+#else
+			p_adv_data[i+5] = (uint8_t) (CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR & 0xFF);
+			p_adv_data[i+6] = (uint8_t) (CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR >> 8);
+			p_adv_data[i+7] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID & 0xFF);
+			p_adv_data[i+8] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID >> 8);
+			p_adv_data[i+9] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID &0xFF);
+			p_adv_data[i+10] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID >>8);
+#endif /* CONFIG_STM32_FACTORY_DATA_ENABLE */
 			break;
+		case AD_TYPE_COMPLETE_LOCAL_NAME:
 		case AD_TYPE_TX_POWER_LEVEL:
-			break;
-		case AD_TYPE_COMPLETE_LOCAL_NAME: {
-			if ((p_adv_data[i + ad_length] == 'X')
-					&& (p_adv_data[i + ad_length - 1] == 'X')) {
-				bd_addr_1 = ((p_bd_addr[0] & 0xF0) >> 4);
-				bd_addr_0 = (p_bd_addr[0] & 0xF);
-
-				/* Convert hex value into ascii */
-				if (bd_addr_1 > 0x09) {
-					p_adv_data[i + ad_length - 1] = bd_addr_1 + '7';
-				} else {
-					p_adv_data[i + ad_length - 1] = bd_addr_1 + '0';
-				}
-
-				if (bd_addr_0 > 0x09) {
-					p_adv_data[i + ad_length] = bd_addr_0 + '7';
-				} else {
-					p_adv_data[i + ad_length] = bd_addr_0 + '0';
-				}
-			}
-			break;
-		}
-		case AD_TYPE_MANUFACTURER_SPECIFIC_DATA: {
-			p_adv_data[i + 2] = ST_MANUF_ID;
-			p_adv_data[i + 3] = 0x00;
-			p_adv_data[i + 4] = BLUESTSDK_V2; /* blueST SDK version */
-			p_adv_data[i + 5] = BOARD_ID_NUCLEO_WBA; /* Board ID */
-			p_adv_data[i + 6] = FW_ID_HEART_RATE; /* FW ID */
-			p_adv_data[i + 7] = 0x00; /* FW data 1 */
-			p_adv_data[i + 8] = 0x00; /* FW data 2 */
-			p_adv_data[i + 9] = 0x00; /* FW data 3 */
-			p_adv_data[i + 10] = p_bd_addr[5]; /* MSB BD address */
-			p_adv_data[i + 11] = p_bd_addr[4];
-			p_adv_data[i + 12] = p_bd_addr[3];
-			p_adv_data[i + 13] = p_bd_addr[2];
-			p_adv_data[i + 14] = p_bd_addr[1];
-			p_adv_data[i + 15] = p_bd_addr[0]; /* LSB BD address */
-			break;
-		}
+		case AD_TYPE_FLAGS:
+		case AD_TYPE_MANUFACTURER_SPECIFIC_DATA:
 		default:
 			break;
 		}
@@ -1476,10 +1486,6 @@ void NVMCB_Store(const uint32_t *ptr, uint32_t size) {
 
 /* USER CODE BEGIN FD_WRAP_FUNCTIONS */
 
-#if (BLE_RADIO_ACTIVITY_ON_LED_SUPPORT != 0)
-static void Switch_OFF_Led(void *arg) {
-	return;
-}
-#endif
+
 
 /* USER CODE END FD_WRAP_FUNCTIONS */

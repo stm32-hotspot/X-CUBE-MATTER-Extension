@@ -194,7 +194,7 @@
 #define CHIP_CONFIG_ENABLE_ICD_SERVER 1  //set to 1 for GenericSwitch-App
 
 #if (CHIP_CONFIG_ENABLE_ICD_SERVER == 1)
-#define CHIP_DEVICE_CONFIG_ENABLE_SED 0 // to enable SED feature
+#define CHIP_DEVICE_CONFIG_ENABLE_SED 1 // to enable SED feature
 
 #define CHIP_DEVICE_CONFIG_ICD_SLOW_POLL_INTERVAL System::Clock::Milliseconds32(300000)
 #define CHIP_DEVICE_CONFIG_ICD_FAST_POLL_INTERVAL System::Clock::Milliseconds32(200)

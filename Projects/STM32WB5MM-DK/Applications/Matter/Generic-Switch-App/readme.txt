@@ -8,7 +8,7 @@
   *          Matter for integration with STM32Cube solution.
   ******************************************************************************
   *
-  * Copyright (c) 2019-2024 STMicroelectronics.
+  * Copyright (c) 2019-2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -76,6 +76,8 @@ To get the traces in real time, you can connect an HyperTerminal to the STLink V
     - Parity = none
     - Flow control = none
 
+Note: By default the low power is activated and therefore traces are not activated.
+
 **** START DEMO ****
 1st boot the End Device must be commissioned (BLE then Thread)
 Then other boot, only Thread is needed
@@ -89,13 +91,19 @@ LCD Mapping :
  - The LCD screen displays: "Fabric Created": if commissioning success.
                             "Fabric Failed" : if commissioning failed.
                             "Fabric Found"  : if the credentials from the non-volatile memory(NVM)
-                                              have been found 
+                                              have been found
+											  
+Note: By default the low power is activated and therefore the LCD is not activated.
+
 ****  BUTTON SUMMARY ****
 Button Mapping:
 - Button 1:
    Press the button for at least 10 seconds to trigger a factory reset.
    Press the button (short press) to save persistent data in non-volatile memory before resetting or removing power supply of the board.
 
+-Button 2:
+   Press  short or long to test switch cluster. 
+   
 ****  PROJECT GENERATION WITH CUBEMX ****
 This project was generated with CubeMX (6.13.0) and STM32Cube MCU Package for STM32WB Series (1.21.0).
 

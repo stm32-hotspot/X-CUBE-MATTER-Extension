@@ -119,7 +119,6 @@ static RAMCFG_HandleTypeDef sram2_ns =
 /* Private function prototypes -----------------------------------------------*/
 static void Enter_Stop_Standby_Mode(void);
 static void Exit_Stop_Standby_Mode(void);
-void Standby_Restore_GPIO(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -228,7 +227,7 @@ OPTIMIZED static void Exit_Stop_Standby_Mode(void)
 #if (CFG_SCM_SUPPORTED == 1)
   if (LL_PWR_IsActiveFlag_STOP() == 1U)
   {
-	     /* SCM HSE BEGIN */
+    /* SCM HSE BEGIN */
     /* Clear SW_HSERDY, if needed */
     if (isRadioActive () == SCM_RADIO_NOT_ACTIVE)
     {
@@ -344,6 +343,8 @@ OPTIMIZED void PWR_EnterOffMode( void )
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
+  Standby_Restore_GPIO();
+
   RT_DEBUG_DTBInit();
   RT_DEBUG_DTBConfig();
 #endif /* CFG_RT_DEBUG_DTB */
@@ -363,7 +364,7 @@ OPTIMIZED void PWR_ExitOffMode( void )
   if ( 1UL == boot_after_standby )
   {
     boot_after_standby = 0;
-	
+
 #if (CFG_SCM_SUPPORTED == 1)
     /* SCM HSE BEGIN */
     SCM_HSE_Clear_SW_HSERDY();

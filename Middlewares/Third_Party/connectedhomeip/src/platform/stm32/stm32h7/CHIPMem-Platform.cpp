@@ -215,7 +215,6 @@ void * MemoryRealloc(void * p, size_t size)
     return new_ptr;
 }
 
-
 void MemoryFree(void * p)
 {
     VERIFY_INITIALIZED();
