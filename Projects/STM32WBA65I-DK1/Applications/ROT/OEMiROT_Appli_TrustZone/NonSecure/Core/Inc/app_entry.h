@@ -66,7 +66,7 @@ typedef void (*PushButtonCallback)(ButtonDesc_t *aMessage);
 
 #define APP_NAME "Lighting-app"
 /* Version */
-#define X_CUBE_MATTER_VERSION "v1.4.0_OEMIROT_v1"
+#define X_CUBE_MATTER_VERSION "v1.4.1_OEMIROT_v1"
 #define PRODUCT_NAME "Dimmable Light"
 #define VENDOR_NAME "STMicroelectronics"
 #define MATTER_SDK_VERSION "1.4"

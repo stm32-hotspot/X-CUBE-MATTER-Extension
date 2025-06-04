@@ -5,11 +5,14 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Release Notes for Projects of X-CUBE-MATTER Package</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <style type="text/css">@charset "UTF-8";
 
@@ -1504,15 +1507,123 @@ text-align: center;
 <p>Here is the list of references to the user documents:</p>
 <ul>
 <li><a href="https://wiki.st.com/stm32mcu/wiki/Category:Matter">Matter STMicroelectronics MCU Wiki</a> - ST Wiki dedicated to MCU, Matter page</li>
-<li><a href="https://www.st.com/resource/en/data_brief/dm01026997.pdf">DB5144</a> - Data Brief of the Matter software expansion for STM32Cube</li>
+<li><a href="https://www.st.com/resource/en/data_brief/x-cube-matter.pdf">DB5144</a> - Data Brief of the Matter software expansion for STM32Cube</li>
 </ul>
 </div>
-<div class="col-sm-12 col-lg-8">
-<h1 id="update-history">Update history</h1>
+<section id="update-history" class="col-sm-12 col-lg-8">
+<h1>Update history</h1>
+<div class="collapse">
+<input type="checkbox" id="collapse-section6" checked aria-hidden="true"> <label for="collapse-section6" aria-hidden="true"><strong>V1.4.1 / 22-May-2025</strong></label>
+<div>
+<h2 id="main-changes">Main changes</h2>
+<ul>
+<li>Add STM32H7 support</li>
+</ul>
+<p>Here is the list of provided applications:</p>
+<ul>
+<li>Lighting-App implements dimmable light device type.</li>
+<li>Window-App implements window covering device type.</li>
+<li>Generic-Switch-App implements switch device type.</li>
+<li>Bridge-App implements an example of Matter Bridge over Ethernet.</li>
+<li>STM-Provisioning-App implements a demonstration of secure storage of DAC private key in CKS (for WB) and in ITS for WBA6.</li>
+<li>Note some applications are provided with or without secure boot and OTA support.</li>
+<li>Note secure boot and OTA is provided thanks to SBSFU on STM32WB and thanks to OEMiRoT (ROT / MCUBoot) on STM32WBA</li>
+<li>Low power ICD. Note that trace is not enabled and LCD is OFF when ICD is enabled.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Board</th>
+<th style="text-align: left;">Project category</th>
+<th style="text-align: left;">Path</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32WB5MM-DK</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WB5MM-DK/Applications/Matter/Lighting-App</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32WB5MM-DK</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WB5MM-DK/Applications/Matter/Lighting-App-SBSFU</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32WB5MM-DK</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WB5MM-DK/Applications/Matter/Window-App</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32WB5MM-DK</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WB5MM-DK/Applications/Matter/Generic-Switch-App</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32WB5MM-DK</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WB5MM-DK/Applications/Matter/STM_Provisioning</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32WBA65I-DK1</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WBA65I-DK1/Applications/Matter/Lighting-App</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32WBA65I-DK1</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WBA65I-DK1/Applications/Matter/Window-App</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32WBA65I-DK1</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WBA65I-DK1/Applications/Matter/Generic-Switch-App</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32WBA65I-DK1</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WBA65I-DK1/Applications/Matter/STM_Provisioning</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32WBA65I-DK1</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/STM32WBA65I-DK1/Applications/ROT</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-H753ZI</td>
+<td style="text-align: left;">Applications/Matter</td>
+<td style="text-align: left;">Projects/NUCLEO-H753ZI/Applications/Matter/Bridge-App</td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations">Known limitations</h2>
+<ul>
+<li>See Top Release_Notes</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development toolchains and compilers</h2>
+<ul>
+<li>See Top Release_Notes</li>
+</ul>
+<h2 id="supported-devices-and-boards">Supported devices and boards</h2>
+<ul>
+<li>See Top Release_Notes</li>
+</ul>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<ul>
+<li>See Top Release_Notes</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>See Top Release_Notes</li>
+</ul>
+</div>
+</div>
 <div class="collapse">
 <input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section5" aria-hidden="true"><strong>V1.4.0 / 21-Mar-2025</strong></label>
 <div>
-<h2 id="main-changes">Main changes</h2>
+<h2 id="main-changes-1">Main changes</h2>
 <ul>
 <li>Add STM32WBA6 support</li>
 </ul>
@@ -1526,7 +1637,7 @@ text-align: center;
 <li>Note secure boot and OTA is provided thanks to SBSFU on STM32WB and thanks to OEMiRoT (ROT / MCUBoot) on STM32WBA</li>
 <li>Low power ICD is only demonstrated on STM32WB. Note that trace is not enabled and LCD is OFF when ICD is enabled.</li>
 </ul>
-<h2 id="contents">Contents</h2>
+<h2 id="contents-1">Contents</h2>
 <p>Projects</p>
 <table>
 <thead>
@@ -1589,23 +1700,23 @@ text-align: center;
 </tr>
 </tbody>
 </table>
-<h2 id="known-limitations">Known limitations</h2>
+<h2 id="known-limitations-1">Known limitations</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="development-toolchains-and-compilers">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-1">Development toolchains and compilers</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="supported-devices-and-boards">Supported devices and boards</h2>
+<h2 id="supported-devices-and-boards-1">Supported devices and boards</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="dependencies">Dependencies</h2>
+<h2 id="dependencies-1">Dependencies</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
@@ -1614,7 +1725,7 @@ text-align: center;
 <div class="collapse">
 <input type="checkbox" id="collapse-section4" checked aria-hidden="true"> <label for="collapse-section4" aria-hidden="true"><strong>V1.1.1 / 13-Dec-2024</strong></label>
 <div>
-<h2 id="main-changes-1">Main changes</h2>
+<h2 id="main-changes-2">Main changes</h2>
 <ul>
 <li>Add ST provisioning application<br />
 </li>
@@ -1629,7 +1740,7 @@ text-align: center;
 <li>Generic-Switch-App implements switch (server) with enable ICD enable to demonstrate Low Power use case type without OTA support. Note that trace is not enabled and LCD is OFF when ICD is enabled.</li>
 <li>STM-Provisioning-App implements a demonstration of secure storage of DAC private key in CKS.</li>
 </ul>
-<h2 id="contents-1">Contents</h2>
+<h2 id="contents-2">Contents</h2>
 <p><small>The Project categories flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <p>Projects</p>
 <table>
@@ -1673,23 +1784,23 @@ text-align: center;
 </tr>
 </tbody>
 </table>
-<h2 id="known-limitations-1">Known limitations</h2>
+<h2 id="known-limitations-2">Known limitations</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="development-toolchains-and-compilers-1">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-2">Development toolchains and compilers</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="supported-devices-and-boards-1">Supported devices and boards</h2>
+<h2 id="supported-devices-and-boards-2">Supported devices and boards</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<h2 id="backward-compatibility-2">Backward compatibility</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="dependencies-1">Dependencies</h2>
+<h2 id="dependencies-2">Dependencies</h2>
 <p>This project release is compatible with:</p>
 <ul>
 <li>See Top Release_Notes</li>
@@ -1699,7 +1810,7 @@ text-align: center;
 <div class="collapse">
 <input type="checkbox" id="collapse-section3" checked aria-hidden="true"> <label for="collapse-section3" aria-hidden="true"><strong>V1.1.0 / 19-July-2024</strong></label>
 <div>
-<h2 id="main-changes-2">Main changes</h2>
+<h2 id="main-changes-3">Main changes</h2>
 <ul>
 <li>Generic switch (Switch) application with MS&amp;MSR&amp;MSL feature map with ICD Cluster support</li>
 <li>Add Diagnostics Logs cluster</li>
@@ -1715,7 +1826,7 @@ text-align: center;
 <li>Window-App-SBSFU implements window covering device type with OTA support (source code and binaries are provided)</li>
 <li>Generic-Switch-App implements switch (server) with enable ICD enable to demonstrate Low Power use case type without OTA support (source code and binaries are provided). Note that trace is not enabled and LCD is OFF when ICD is enabled.</li>
 </ul>
-<h2 id="contents-2">Contents</h2>
+<h2 id="contents-3">Contents</h2>
 <p><small>The Project categories flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <p>Projects</p>
 <table>
@@ -1754,24 +1865,24 @@ text-align: center;
 </tr>
 </tbody>
 </table>
-<h2 id="known-limitations-2">Known limitations</h2>
+<h2 id="known-limitations-3">Known limitations</h2>
 <ul>
 <li>Full pre-certification tests have been passed on the dimmable light application (Lighting-App-SBSFU) Every test is passed but TC_RR_1.1, discussion is ongoing in CSA to clarify the support of this TC. TC-S-x.x for scene not passed as removed from CSA</li>
 <li>ICD Test harness related to LIT are partially passed. Note that LIT is provisional for SDK 1.3</li>
 </ul>
-<h2 id="development-toolchains-and-compilers-2">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-3">Development toolchains and compilers</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="supported-devices-and-boards-2">Supported devices and boards</h2>
+<h2 id="supported-devices-and-boards-3">Supported devices and boards</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="backward-compatibility-2">Backward compatibility</h2>
+<h2 id="backward-compatibility-3">Backward compatibility</h2>
 <ul>
 <li>Yes</li>
 </ul>
-<h2 id="dependencies-2">Dependencies</h2>
+<h2 id="dependencies-3">Dependencies</h2>
 <p>This project release is compatible with:</p>
 <ul>
 <li>See Top Release_Notes</li>
@@ -1781,7 +1892,7 @@ text-align: center;
 <div class="collapse">
 <input type="checkbox" id="collapse-section2" checked aria-hidden="true"> <label for="collapse-section2" aria-hidden="true"><strong>V1.0.3 / 5-Apr-2024</strong></label>
 <div>
-<h2 id="main-changes-3">Main changes</h2>
+<h2 id="main-changes-4">Main changes</h2>
 <p>One application is added:</p>
 <ul>
 <li>Generic switch (Switch) application without OTA/SBSFU</li>
@@ -1795,7 +1906,7 @@ text-align: center;
 <li>Generic-Switch-App implements switch (server) device type without OTA support (source code and binaries are provided)</li>
 <li>Thread_RCP implements RCP to be associated to Raspberry Pi or MP135 to setup an OTBR (only binaries are provided)</li>
 </ul>
-<h2 id="contents-3">Contents</h2>
+<h2 id="contents-4">Contents</h2>
 <p><small>The Project categories flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <p>Projects</p>
 <table>
@@ -1839,25 +1950,25 @@ text-align: center;
 </tr>
 </tbody>
 </table>
-<h2 id="known-limitations-3">Known limitations</h2>
+<h2 id="known-limitations-4">Known limitations</h2>
 <ul>
 <li>Full pre-certification tests (using STM32CubeIDE 1.9.0) have been passed on the dimmable light application (Lighting-App-SBSFU).</li>
 <li>Partial (only window covering cluster and generic switch cluster, not the core) pre-certification tests (using STM32CubeIDE 1.12.1) have been passed on window covering and generic switch applications (Window-App-SBSFU, Generic-Switch-App).</li>
 <li>Low power for Generic-Switch (SED), switch-off BLE prevent to enter STOP2 low-power mode. regular wake-up (occurs every second).</li>
 </ul>
-<h2 id="development-toolchains-and-compilers-3">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-4">Development toolchains and compilers</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="supported-devices-and-boards-3">Supported devices and boards</h2>
+<h2 id="supported-devices-and-boards-4">Supported devices and boards</h2>
 <ul>
 <li>See Top Release_Notes</li>
 </ul>
-<h2 id="backward-compatibility-3">Backward compatibility</h2>
+<h2 id="backward-compatibility-4">Backward compatibility</h2>
 <ul>
 <li>Yes</li>
 </ul>
-<h2 id="dependencies-3">Dependencies</h2>
+<h2 id="dependencies-4">Dependencies</h2>
 <p>This project release is compatible with:</p>
 <ul>
 <li>See Top Release_Notes</li>
@@ -1867,7 +1978,7 @@ text-align: center;
 <div class="collapse">
 <input type="checkbox" id="collapse-section1" checked aria-hidden="true"> <label for="collapse-section1" aria-hidden="true"><strong>V1.0.0 / 15-Feb-2024</strong></label>
 <div>
-<h2 id="main-changes-4">Main changes</h2>
+<h2 id="main-changes-5">Main changes</h2>
 <h3 id="first-release">First release</h3>
 <p>Dimmable light (Lighting) and Window covering (Window) applications with and without OTA/SBSFU.</p>
 <ul>
@@ -1877,7 +1988,7 @@ text-align: center;
 <li>Window-App-SBSFU implements window covering device type with OTA support (source code and binaries are provided)</li>
 <li>Thread_RCP implements RCP to be associated to Raspberry Pi or MP135 to setup an OTBR (only binaries are provided)</li>
 </ul>
-<h2 id="contents-4">Contents</h2>
+<h2 id="contents-5">Contents</h2>
 <p><small>The Project categories flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <p>Projects</p>
 <table>
@@ -1916,21 +2027,21 @@ text-align: center;
 </tr>
 </tbody>
 </table>
-<h2 id="known-limitations-4">Known limitations</h2>
+<h2 id="known-limitations-5">Known limitations</h2>
 <p>Full pre-certification tests have been passed only on the dimmable light application.</p>
 <p>For SBSFU only development mode configuration has been tested (production mode tests on going). See <a href="https://www.st.com/resource/en/application_note/an5056-integration-guide-for-the-xcubesbsfu-stm32cube-expansion-package-stmicroelectronics.pdf">AN5056</a> Chapter production mode configuration.</p>
-<h2 id="development-toolchains-and-compilers-4">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-5">Development toolchains and compilers</h2>
 <ul>
 <li>STM32CubeIDE v1.12.1 (GNU Tools for STM32 (10.3-2021.10))</li>
 </ul>
-<h2 id="supported-devices-and-boards-4">Supported devices and boards</h2>
+<h2 id="supported-devices-and-boards-5">Supported devices and boards</h2>
 <ul>
 <li>STM32WB5MM-DK : Discovery kit with STM32WB5MMG MCU</li>
 <li>P-NUCLEO-WB55.Nucleo : Bluetooth 5 and 802.15.4 Nucleo Pack including USB dongle and Nucleo-64 with STM32WB55 MCUs, supports Arduino Uno V3 and ST morpho connectivity</li>
 </ul>
-<h2 id="backward-compatibility-4">Backward compatibility</h2>
+<h2 id="backward-compatibility-5">Backward compatibility</h2>
 <p>First version</p>
-<h2 id="dependencies-4">Dependencies</h2>
+<h2 id="dependencies-5">Dependencies</h2>
 <p>This projects release is compatible with:</p>
 <ul>
 <li>STM32CubeWB v1.18.0</li>
@@ -1940,7 +2051,7 @@ text-align: center;
 </ul>
 </div>
 </div>
-</div>
+</section>
 </div>
 <footer class="sticky">
 <div class="columns">

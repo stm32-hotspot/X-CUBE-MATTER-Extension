@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -26,9 +26,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "app_conf.h"
-#if (CFG_LCD_SUPPORTED == 1)
-#define LCD1 (0)
-#endif /* (CFG_LCD_SUPPORTED == 1) */
+#include "stm32_rtos.h"
 
 #ifdef STM32WBA55xx
 #ifdef CFG_BSP_ON_DISCOVERY
@@ -40,7 +38,7 @@ extern "C" {
 #endif /* CFG_BSP_ON_DISCOVERY */
 #endif /* STM32WBA55xx */
 
-#ifdef STM32WBA65xx  
+#ifdef STM32WBA65xx
 #ifdef CFG_BSP_ON_DISCOVERY
 #include "stm32wba65i_discovery.h"
 #if (CFG_LCD_SUPPORTED == 1)
@@ -62,8 +60,33 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 
 /* Exported constants --------------------------------------------------------*/
+#if (CFG_LCD_SUPPORTED == 1)
+#define    LCD1                           (0u)
+#endif /* (CFG_LCD_SUPPORTED == 1) */
+  
+#if (defined CFG_BSP_ON_DISCOVERY) && (defined STM32WBA65xx)
+/* No Led Blue on Discovery for STM32WBA65I. Replaced by Red Led */
+#define    LED_BLUE                       LED_RED
+#endif /* (defined CFG_BSP_ON_DISCOVERY) && (defined STM32WBA65xx) */
 
 /* Exported variables --------------------------------------------------------*/
+#if (CFG_BUTTON_SUPPORTED == 1)
+#ifdef CFG_BSP_ON_THREADX
+extern TX_SEMAPHORE         ButtonB1Semaphore, ButtonB2Semaphore, ButtonB3Semaphore;
+#endif /* CFG_BSP_ON_THREADX */
+#ifdef CFG_BSP_ON_FREERTOS
+extern osSemaphoreId_t      ButtonB1Semaphore, ButtonB2Semaphore, ButtonB3Semaphore;
+#endif /* CFG_BSP_ON_FREERTOS */
+#endif /* (CFG_BUTTON_SUPPORTED == 1) */
+
+#if (CFG_JOYSTICK_SUPPORTED == 1)
+#ifdef CFG_BSP_ON_THREADX
+extern TX_SEMAPHORE         JoystickUpSemaphore, JoystickRightSemaphore, JoystickDownSemaphore, JoystickLeftSemaphore, JoystickSelectSemaphore;
+#endif /* CFG_BSP_ON_THREADX */
+#ifdef CFG_BSP_ON_FREERTOS
+extern osSemaphoreId_t      JoystickUpSemaphore, JoystickRightSemaphore, JoystickDownSemaphore, JoystickLeftSemaphore, JoystickSelectSemaphore, JoystickNoneSemaphore, JoystickNoneThread;
+#endif /* CFG_BSP_ON_FREERTOS */
+#endif /* (CFG_JOYSTICK_SUPPORTED == 1) */
 
 /* Exported macros ------------------------------------------------------------*/
 
@@ -78,7 +101,7 @@ void      APP_BSP_LedInit                 ( void );
 
 #endif /* (CFG_LED_SUPPORTED == 1) */
 #if (CFG_LCD_SUPPORTED == 1)
-void      APP_BSP_LcdInit             ( void );
+void      APP_BSP_LcdInit                 ( void );
 
 #endif /* (CFG_LCD_SUPPORTED == 1) */
 #if ( CFG_BUTTON_SUPPORTED == 1 )
@@ -96,18 +119,20 @@ void      BSP_PB_Callback                 ( Button_TypeDef button );
 #endif /* ( CFG_BUTTON_SUPPORTED == 1 )  */
 #if ( CFG_JOYSTICK_SUPPORTED == 1 )
 void      APP_BSP_JoystickInit            ( void );
+uint8_t   APP_BSP_JoystickIsLongPressed   ( void );
+uint8_t   APP_BSP_JoystickIsShortReleased ( void );
+uint8_t   APP_BSP_JoystickIsInitialPress  ( void );
 
 void      APP_BSP_JoystickUpAction        ( void );
 void      APP_BSP_JoystickRightAction     ( void );
 void      APP_BSP_JoystickDownAction      ( void );
 void      APP_BSP_JoystickLeftAction      ( void );
 void      APP_BSP_JoystickSelectAction    ( void );
+void      APP_BSP_JoystickNoneAction      ( void );
 
 void      BSP_JOY_Callback                ( JOY_TypeDef joyNb, JOYPin_TypeDef joyPin );
 
 #endif /* CFG_JOYSTICK_SUPPORTED */
-
-
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -19,10 +19,9 @@
 
 #include "LightingManager.h"
 #include <lib/support/logging/CHIPLogging.h>
-#include "stm32wbaxx_nucleo.h"
 
 // default initialization value for the light level after start
-constexpr uint8_t kDefaultLevel = 64;
+constexpr uint8_t kDefaultLevel = 0;
 
 LightingManager LightingManager::sLight;
 
@@ -120,11 +119,5 @@ void LightingManager::Set(bool aOn) {
 }
 
 void LightingManager::UpdateLight() {
-	if (mState == kState_On) {
-		BSP_LED_On(LED_GREEN);
-	}
-	else {
-		BSP_LED_Off(LED_GREEN);
-	}
 }
 

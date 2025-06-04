@@ -78,11 +78,6 @@
 			<locationURI>PARENT-7-PROJECT_LOC/Utilities/misc/stm32_tiny_vsnprintf.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/stm32wbaxx_nucleo.c</name>
-			<type>1</type>
-			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32WBAxx_Nucleo/stm32wbaxx_nucleo.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/STM32WBAxx_HAL_Driver/stm32wbaxx_hal.c</name>
 			<type>1</type>
 			<locationURI>PARENT-7-PROJECT_LOC/Drivers/STM32WBAxx_HAL_Driver/Src/stm32wbaxx_hal.c</locationURI>
@@ -358,6 +353,16 @@
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/flash_wb.c</locationURI>
 		</link>
 		<link>
+			<name>Application/User/Core/low_level_spi_device.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/low_level_spi_device.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/low_level_spi_flash.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/low_level_spi_flash.c</locationURI>
+		</link>
+		<link>
 			<name>Application/User/Core/main.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/main.cpp</locationURI>
@@ -378,11 +383,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/stm32wbaxx_hal_msp.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/Core/stm32wbaxx_hal_timebase_tim.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/stm32wbaxx_hal_timebase_tim.c</locationURI>
-		</link>
-		<link>
 			<name>Application/User/Core/stm32wbaxx_it.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/stm32wbaxx_it.c</locationURI>
@@ -391,6 +391,11 @@
 			<name>Application/User/Core/stm_ota_flash.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/stm_ota_flash.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/stm_ota_spi_flash.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Core/Src/stm_ota_spi_flash.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/Core/storage_interface.c</name>
@@ -456,6 +461,41 @@
 			<name>Application/User/System/temp_measurement.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Common/WPAN/Modules/temp_measurement.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/m95p32.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/Components/m95p32/m95p32.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/ssd1315.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/Components/ssd1315/ssd1315.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/ssd1315_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/Components/ssd1315/ssd1315_reg.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery_bus.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery_bus.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery_eeprom.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery_eeprom.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery_lcd.c</name>
+			<type>1</type>
+			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32WBA65I-DK1/stm32wba65i_discovery_lcd.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/FreeRTOS/CMSIS_RTOS_V2/cmsis_os2.c</name>

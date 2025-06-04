@@ -17,9 +17,9 @@
   ******************************************************************************
   @endverbatim
 
-### V1.4.0 ###
+### V1.1.0 ###
 ============================
-Based on tag v1.4.0.0 projectCHIP/connectedhomeip repo.
+Based on tag v1.3.0 projectCHIP/connectedhomeip repo.
  
 + add platform adaptation for STM32
 Remove unused components

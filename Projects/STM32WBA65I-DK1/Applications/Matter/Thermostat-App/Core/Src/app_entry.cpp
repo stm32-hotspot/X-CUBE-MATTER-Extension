@@ -31,13 +31,14 @@
 #endif /* (CFG_LPM_LEVEL != 0) */
 #include "stm32_timer.h"
 #include "stm32_mm.h"
-#if (CFG_LOG_SUPPORTED != 0)
+#if (CFG_LOG_SUPPORTED != 0) || (OT_CLI_USE == 1)
 #include "stm32_adv_trace.h"
 #include "serial_cmd_interpreter.h"
-#endif /* CFG_LOG_SUPPORTED */
-#include "ll_sys_if.h"
+#endif /* (CFG_LOG_SUPPORTED != 0) || (OT_CLI_USE == 1)*/
 #include "app_ble.h"
 #include "app_thread.h"
+#include "ll_sys_if.h"
+#include "linklayer_plat.h"
 #include "AppEvent.h"
 #include "AppTask.h"
 #include "app_sys.h"
@@ -55,7 +56,8 @@
 #include "temp_measurement.h"
 #endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
 #include "timer_if.h"
-extern void xPortSysTickHandler (void);
+extern "C" void xPortSysTickHandler (void); /* Redefinition of the function with C linkage */
+extern "C" void vPortSetupTimerInterrupt(void); /* Redefinition of the function with C linkage */
 /* Private includes -----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_bsp.h"
@@ -66,6 +68,9 @@ extern void xPortSysTickHandler (void);
 #include "stm32_lcd.h"
 #endif /* CFG_LCD_SUPPORTED */
 #include "stm32_lpm.h"
+#if(CFG_RT_DEBUG_DTB == 1)
+#include "RTDebug_dtb.h"
+#endif /* CFG_RT_DEBUG_DTB */
 #include "crc_ctrl.h"
 #include "psa/crypto.h"
 #if (OTA_SUPPORT == 1)
@@ -81,8 +86,6 @@ extern void xPortSysTickHandler (void);
 /* Private typedef -----------------------------------------------------------*/
 
 /* USER CODE BEGIN PTD */
-
-
 
 /* USER CODE END PTD */
 
@@ -102,12 +105,8 @@ extern void xPortSysTickHandler (void);
 /* USER CODE END PC */
 
 /* Private variables ---------------------------------------------------------*/
-
-
 #if ( CFG_LPM_LEVEL != 0)
 static bool system_startup_done = FALSE;
-/* Holds maximum number of FreeRTOS tick periods that can be suppressed */
-static uint32_t maximumPossibleSuppressedTicks = 0;
 #endif /* ( CFG_LPM_LEVEL != 0) */
 
 #if (CFG_LOG_SUPPORTED != 0)
@@ -149,6 +148,7 @@ const osThreadAttr_t stRandomProcessTaskAttributes =
   .name = "Hw Random Task",
   .stack_size = TASK_HW_RNG_STACK_SIZE,
   .priority = CFG_TASK_PRIO_HW_RNG
+
 };
 
 /* FreeRtos Amm Background Task stacks attributes */
@@ -166,8 +166,6 @@ const osThreadAttr_t stBPKATaskAttributes =
   .stack_size = TASK_BPKA_STACK_SIZE,
   .priority = CFG_TASK_PRIO_BPKA
 };
-
-
 
 /* FreeRtos Flash Manager Background Task stacks attributes */
 const osThreadAttr_t stFlashManagerBackgroundTaskAttributes = 
@@ -188,7 +186,19 @@ osThreadId_t          AmmBckgTaskId, FmBackgroundTaskId;
 
 
 
+#if ( CFG_LPM_LEVEL != 0)
+/* Holds maximum number of FreeRTOS tick periods that can be suppressed */
+static uint32_t maximumPossibleSuppressedTicks = 0;
+
+/* Timer OS wakeup low power declaration */
 static UTIL_TIMER_Object_t  TimerOSwakeup_Id;
+
+/* Time remaining variables to correct next OS tick */
+static uint32_t timeDiffRemaining = 0;
+static uint32_t lowPowerTimeDiffRemaining = 0;
+#endif /* ( CFG_LPM_LEVEL != 0) */
+
+static UTIL_TIMER_Object_t  TimerOStick_Id;
 /* USER CODE END PV */
 
 /* Global variables ----------------------------------------------------------*/
@@ -201,10 +211,10 @@ static void Config_HSE(void);
 static void RNG_Init( void );
 static void System_Init( void );
 static void SystemPower_Config( void );
-static void TimerOSwakeupCB(void *arg);
+static void TimerOStickCB(void *arg);
+
 #if ( CFG_LPM_LEVEL != 0)
-static void preOSsleepProcessing(uint32_t expectedIdleTime);
-static void postOSsleepProcessing(uint32_t expectedIdleTime);
+static void TimerOSwakeupCB(void *arg);
 static uint32_t getCurrentTime(void);
 #endif /* CFG_LPM_LEVEL */
 
@@ -227,6 +237,12 @@ void APP_BSP_JoystickUpAction( void )
 	ButtonDesc_t Message;
 	Message.button = B1;
 	Message.State = 1;
+	if (APP_BSP_JoystickIsLongPressed()) {
+	  Message.longPressed = 1;
+	}
+	else {
+	  Message.longPressed = 0;
+	}
 	PbCb(&Message); //call matter callback to handle push button
 }
 
@@ -241,30 +257,43 @@ void APP_BSP_JoystickSelectAction( void )
 	 ButtonDesc_t Message;
 	 Message.button = B2;
 	 Message.State = 1;
+	 if (APP_BSP_JoystickIsLongPressed())
+	 {
+	   Message.longPressed = 1;
+	 }
+	 else
+	 {
+	   Message.longPressed = 0;
+	 }
 	 PbCb(&Message); //call matter callback to handle push button
 }
 
+/**
+ * @brief Joystick Right Action
+ *
+ * @param  None
+ * @return None
+ */
 void APP_BSP_JoystickRightAction( void )
 {
 	 ButtonDesc_t Message;
 	 Message.button = B3;
 	 Message.State = 1;
-	 PbCb(&Message); //call matter callback to handle push button
-}
-
-void APP_BSP_JoystickLeftAction( void )
-{
-	 ButtonDesc_t Message;
-	 Message.button = B4;
-	 Message.State = 1;
-	 PbCb(&Message); //call matter callback to handle push button
-}
-
-void APP_BSP_JoystickDownAction( void )
-{
-	 ButtonDesc_t Message;
-	 Message.button = B5;
-	 Message.State = 1;
+	 if (APP_BSP_JoystickIsInitialPress())
+	 {
+	   Message.longPressed = 0;
+	 }
+	 else
+	 {
+	   if (APP_BSP_JoystickIsLongPressed())
+	   {
+	     Message.longPressed = 1;
+	   }
+	   else
+	   {
+		 Message.State = 0;
+	   }
+	 }
 	 PbCb(&Message); //call matter callback to handle push button
 }
 
@@ -330,7 +359,6 @@ void MX_APPE_Config(void)
 void AMM_Background_Task(void *argument)
 {
   UNUSED( argument );
-
   while(1)
   {
     osSemaphoreAcquire(AmmBckgSemaphore, osWaitForever);
@@ -345,7 +373,6 @@ void AMM_Background_Task(void *argument)
 void FM_Background_Task(void *argument)
 {
   UNUSED( argument );
-
   while(1)
   {
     osSemaphoreAcquire(FlashMangerReqSemaphore, osWaitForever);
@@ -360,7 +387,6 @@ void FM_Background_Task(void *argument)
 void BPKA_Task(void *argument)
 {
   UNUSED( argument );
-
   while(1)
   {
     osSemaphoreAcquire(BpkaSemaphore, osWaitForever);
@@ -392,7 +418,7 @@ uint32_t MX_APPE_Init(void *p_param)
   APP_DBG("**********************************************************\n");
   APP_DBG("PRODUCT NAME : " PRODUCT_NAME "\n"  );
   APP_DBG("VENDOR NAME : " VENDOR_NAME "\n" );
-  #if defined(USE_STM32WBA65I_DK1) // TODO: to be checked once WBA6 DK header file released
+  #if defined(USE_STM32WBA65I_DK1) 
     APP_DBG("HARDWARE : STM32WBA65MM-DK\n" );
   #elif defined(STM32WBA65xx)
    	APP_DBG("HARDWARE : STM32WBA65xx\n" );
@@ -425,7 +451,7 @@ uint32_t MX_APPE_Init(void *p_param)
   { 
     APP_DBG( "ERROR FREERTOS :  AMM BACKGROUND TASK CREATION FAILED" );
     while(1);
-  } 
+  }
   
   CRCCTRL_Init();
 
@@ -437,7 +463,7 @@ uint32_t MX_APPE_Init(void *p_param)
     APP_DBG( "ERROR FREERTOS : FLASH MANAGER BACKGROUND SEMAPHORE CREATION FAILED" );
     Error_Handler();
   }
-  
+
   /* Create flash manager Task over FreeRTOS */
   FmBackgroundTaskId = osThreadNew(FM_Background_Task, NULL, &stFlashManagerBackgroundTaskAttributes);
   if ( FmBackgroundTaskId == NULL )
@@ -450,7 +476,6 @@ uint32_t MX_APPE_Init(void *p_param)
 
 
   /* USER CODE END APPE_Init_1 */
-  
   /* Create thread for BPKA and semaphore to control it*/
   BpkaSemaphore = osSemaphoreNew( 1, 0, NULL );
   if ( BpkaSemaphore == NULL )
@@ -458,7 +483,7 @@ uint32_t MX_APPE_Init(void *p_param)
     APP_DBG( "ERROR FREERTOS : BPKA SEMAPHORE CREATION FAILED" );
     while(1);
   }
-  
+
   BpkaTaskId = osThreadNew( BPKA_Task, NULL, &stBPKATaskAttributes );
   if ( BpkaTaskId == NULL )
   { 
@@ -472,19 +497,20 @@ uint32_t MX_APPE_Init(void *p_param)
 
   APP_DBG("Start init ble\n");
   APP_BLE_Init();
-  
+#if ( CFG_LPM_LEVEL != 0)
   /* create a SW timer to wakeup system from low power */
   UTIL_TIMER_Create(&TimerOSwakeup_Id,
                     0,
                     UTIL_TIMER_ONESHOT,
                     &TimerOSwakeupCB, 0);
+  maximumPossibleSuppressedTicks = UINT32_MAX;// TODO check this value
+#endif /* ( CFG_LPM_LEVEL != 0) */
   
   /* Disable RFTS Bypass for flash operation - Since LL has not started yet */
   FD_SetStatus (FD_FLASHACCESS_RFTS_BYPASS, LL_FLASH_DISABLE);
 
   ll_sys_config_params();
-
-
+  
   /* USER CODE BEGIN APPE_Init_2 */
   /* USER CODE END APPE_Init_2 */
   APP_DEBUG_SIGNAL_RESET(APP_APPE_INIT);
@@ -598,8 +624,15 @@ static void System_Init( void )
   ADCCTRL_Init ();
 #endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
 
+#if(CFG_RT_DEBUG_DTB == 1)
+  /* DTB initialization and configuration */
+  RT_DEBUG_DTBInit();
+  RT_DEBUG_DTBConfig();
+#endif /* CFG_RT_DEBUG_DTB */
+
 #if ( CFG_LPM_LEVEL != 0)
   system_startup_done = TRUE;
+  UNUSED(system_startup_done);
 #endif /* ( CFG_LPM_LEVEL != 0) */
 
   return;
@@ -634,12 +667,6 @@ static void SystemPower_Config(void)
   HAL_GPIO_Init(GPIOB, &DbgIOsInit);
 #endif /* CFG_DEBUGGER_LEVEL */
 
-  /* Configure Vcore supply */
-  if ( HAL_PWREx_ConfigSupply( CFG_CORE_SUPPLY ) != HAL_OK )
-  {
-    Error_Handler();
-  }
-
 #if (CFG_LPM_LEVEL != 0)
   /* Initialize low Power Manager. By default enabled */
   UTIL_LPM_Init();
@@ -649,17 +676,22 @@ static void SystemPower_Config(void)
   LL_PWR_SetSRAM1SBRetention(LL_PWR_SRAM1_SB_FULL_RETENTION);
   LL_PWR_SetSRAM2SBRetention(LL_PWR_SRAM2_SB_FULL_RETENTION);
   LL_PWR_SetRadioSBRetention(LL_PWR_RADIO_SB_FULL_RETENTION); /* Retain sleep timer configuration */
-
+  UTIL_LPM_SetOffMode(1U << CFG_LPM_APP, UTIL_LPM_ENABLE); // activate if standby supported
 #else /* (CFG_LPM_STDBY_SUPPORTED == 1) */
-  UTIL_LPM_SetOffMode(1U << CFG_LPM_APP, UTIL_LPM_DISABLE);
+  UTIL_LPM_SetOffMode(1U << CFG_LPM_APP, UTIL_LPM_DISABLE);// deactivate standby
 #endif /* (CFG_LPM_STDBY_SUPPORTED == 1) */
+  UTIL_LPM_SetStopMode(1U << CFG_LPM_APP, UTIL_LPM_ENABLE); // activate stop mode since LP enabled
+
 #endif /* (CFG_LPM_LEVEL != 0)  */
+
+  /* USER CODE BEGIN SystemPower_Config */
+
+  /* USER CODE END SystemPower_Config */
 }
 
 static void HW_RNG_Process_Task( void * argument )
 {
   UNUSED( argument );
-
   for(;;)
   {
     osSemaphoreAcquire(HwRngSemaphore, osWaitForever);
@@ -683,7 +715,7 @@ static void RNG_Init(void)
     APP_DBG( "ERROR FREERTOS : RANDOM PROCESS SEMAPHORE CREATION FAILED" );
     while(1);
   }
-  
+
   /* Create the Random Process Thread */
   RandomProcessTaskId = osThreadNew( HW_RNG_Process_Task, NULL, &stRandomProcessTaskAttributes );
   if ( RandomProcessTaskId == NULL )
@@ -708,7 +740,18 @@ static void AMM_WrapperFree (uint32_t * const p_BufferAddr)
   UTIL_MM_ReleaseBuffer ((void *)p_BufferAddr);
 }
 
+/* OS tick callback */
+static void TimerOStickCB(void *arg)
+{
+  xPortSysTickHandler();
+  /* USER CODE BEGIN TimerOStickCB */
+  HAL_IncTick();
+  /* USER CODE END TimerOStickCB */
 
+  return;
+}
+
+#if ( CFG_LPM_LEVEL != 0)
 /* OS wakeup callback */
 static void TimerOSwakeupCB(void *arg)
 {
@@ -717,39 +760,6 @@ static void TimerOSwakeupCB(void *arg)
   /* USER CODE END TimerOSwakeupCB */
   return;
 }
-
-#if ( CFG_LPM_LEVEL != 0)
-static void preOSsleepProcessing(uint32_t expectedIdleTime)
-{
-  LL_PWR_ClearFlag_STOP();
-
-  if ( ( system_startup_done != FALSE ) && ( UTIL_LPM_GetMode() == UTIL_LPM_OFFMODE ) )
-  {
-    APP_SYS_BLE_EnterDeepSleep();
-  }
-
-  LL_RCC_ClearResetFlags();
-
-#if defined(STM32WBAXX_SI_CUT1_0)
-  /* Wait until HSE is ready */
-  while (LL_RCC_HSE_IsReady() == 0);
-
-  UTILS_ENTER_LIMITED_CRITICAL_SECTION(RCC_INTR_PRIO << 4U);
-  scm_hserdy_isr();
-  UTILS_EXIT_LIMITED_CRITICAL_SECTION();
-#endif /* STM32WBAXX_SI_CUT1_0 */
-
-  UTIL_LPM_EnterLowPower(); /* WFI instruction call is inside this API */
-}
-
-static void postOSsleepProcessing(uint32_t expectedIdleTime)
-{
-  UTIL_TIMER_Stop(&TimerOSwakeup_Id);
-
-  LL_AHB5_GRP1_EnableClock(LL_AHB5_GRP1_PERIPH_RADIO);
-  ll_sys_dp_slp_exit();
-}
-
 /* return current time since boot, continue to count in standby low power mode */
 static uint32_t getCurrentTime(void)
 {
@@ -757,10 +767,8 @@ static uint32_t getCurrentTime(void)
 }
 #endif /* ( CFG_LPM_LEVEL != 0) */
 
+
 /* USER CODE BEGIN FD_LOCAL_FUNCTIONS */
-
-
-
 
 /* USER CODE END FD_LOCAL_FUNCTIONS */
 
@@ -772,7 +780,40 @@ static uint32_t getCurrentTime(void)
 
 void BPKACB_Process( void )
 {
-  osSemaphoreRelease(BpkaSemaphore);  
+  osSemaphoreRelease(BpkaSemaphore);
+}
+
+void HAL_Delay(uint32_t Delay)
+{
+  uint32_t tickstart = HAL_GetTick();
+  uint32_t wait = Delay;
+
+  /* Add a freq to guarantee minimum wait */
+  if (wait < HAL_MAX_DELAY)
+  {
+    wait += HAL_GetTickFreq();
+  }
+
+
+  while ((HAL_GetTick() - tickstart) < wait)
+  {
+#if ( CFG_LPM_LEVEL != 0)
+	 /************************************************************************************
+     * ENTER SLEEP MODE
+     ***********************************************************************************/
+    LL_LPM_EnableSleep( ); /**< Clear SLEEPDEEP bit of Cortex System Control Register */
+
+    /**
+     * This option is used to ensure that store operations are completed
+     */
+  #if defined ( __CC_ARM)
+    __force_stores();
+  #endif
+
+    __WFI( );
+#endif
+  }
+
 }
 
 /**
@@ -803,7 +844,7 @@ void FM_ProcessRequest (void)
   osSemaphoreRelease(FlashMangerReqSemaphore);
 }
 
-#if (CFG_LOG_SUPPORTED != 0)
+#if ((CFG_LOG_SUPPORTED == 0) && (CFG_LPM_LEVEL != 0))
 /**
  *
  */
@@ -812,19 +853,23 @@ void RNG_KERNEL_CLK_OFF(void)
   /* RNG module may not switch off HSI clock when traces are used */
 
   /* USER CODE BEGIN RNG_KERNEL_CLK_OFF */
-
+  LL_RCC_HSI_Disable();
   /* USER CODE END RNG_KERNEL_CLK_OFF */
 }
 
+#if (CFG_SCM_SUPPORTED == 1)
 void SCM_HSI_CLK_OFF(void)
 {
   /* SCM module may not switch off HSI clock when traces are used */
 
   /* USER CODE BEGIN SCM_HSI_CLK_OFF */
-
+  LL_RCC_HSI_Disable();
   /* USER CODE END SCM_HSI_CLK_OFF */
 }
+#endif /* CFG_SCM_SUPPORTED */
+#endif /* ((CFG_LOG_SUPPORTED == 0) && (CFG_LPM_LEVEL != 0)) */
 
+#if (CFG_LOG_SUPPORTED != 0)
 void UTIL_ADV_TRACE_PreSendHook(void)
 {
 #if (CFG_LPM_LEVEL != 0)
@@ -849,10 +894,42 @@ void UTIL_ADV_TRACE_PostSendHook(void)
 
 #endif /* (CFG_LOG_SUPPORTED != 0) */
 
+
+
+/* Implement weak function to setup a timer that will trig OS ticks */
+void vPortSetupTimerInterrupt( void )
+{
+  UTIL_TIMER_Create(&TimerOStick_Id,
+                    portTICK_PERIOD_MS,
+                    UTIL_TIMER_PERIODIC,
+                    &TimerOStickCB, 0);
+
+  UTIL_TIMER_StartWithPeriod(&TimerOStick_Id, portTICK_PERIOD_MS);
+  /* USER CODE BEGIN vPortSetupTimerInterrupt */
+  if(portTICK_PERIOD_MS == 10U)
+  {
+    uwTickFreq = HAL_TICK_FREQ_10HZ;
+  }
+  else if(portTICK_PERIOD_MS == 100U)
+  {
+    uwTickFreq = HAL_TICK_FREQ_100HZ;
+  }
+  else if(portTICK_PERIOD_MS == 1000U)
+  {
+    uwTickFreq = HAL_TICK_FREQ_1KHZ;
+  }
+  else
+  {
+    uwTickFreq = HAL_TICK_FREQ_DEFAULT;
+  }
+  /* USER CODE END vPortSetupTimerInterrupt */
+  return;
+}
+
 #if ( CFG_LPM_LEVEL != 0)
 void vPortSuppressTicksAndSleep( uint32_t xExpectedIdleTime )
 {
-  uint32_t lowPowerTimeBeforeSleep, lowPowerTimeAfterSleep;
+  uint32_t lowPowerTimeBeforeSleep, lowPowerTimeAfterSleep, lowPowerTimeDiff, timeDiff;
   eSleepModeStatus eSleepStatus;
 
   /* Stop the timer that is generating the OS tick interrupt. */
@@ -884,49 +961,72 @@ void vPortSuppressTicksAndSleep( uint32_t xExpectedIdleTime )
   }
   else
   {
-    if( eSleepStatus == eNoTasksWaitingTimeout )
-    {
-      /* It is not necessary to configure an interrupt to bring the
-         microcontroller out of its low power state at a fixed time in the
-         future. */
-      preOSsleepProcessing(xExpectedIdleTime); /* WFI instruction call is inside this API */
-      postOSsleepProcessing(xExpectedIdleTime);
-    }
-    else
+    if( eSleepStatus != eNoTasksWaitingTimeout )
     {
       /* Configure an interrupt to bring the microcontroller out of its low
          power state at the time the kernel next needs to execute. The
          interrupt must be generated from a source that remains operational
          when the microcontroller is in a low power state. */
       UTIL_TIMER_StartWithPeriod(&TimerOSwakeup_Id, (xExpectedIdleTime - 1) * portTICK_PERIOD_MS);
-
-      /* Read the current time from RTC, maintainned in standby */
-      lowPowerTimeBeforeSleep = getCurrentTime();
-
-      /* Enter the low power state. */
-      preOSsleepProcessing(xExpectedIdleTime); /* WFI instruction call is inside this API */
-      postOSsleepProcessing(xExpectedIdleTime);
-
-      /* Determine how long the microcontroller was actually in a low power
-         state for, which will be less than xExpectedIdleTime if the
-         microcontroller was brought out of low power mode by an interrupt
-         other than that configured by the vSetWakeTimeInterrupt() call.
-         Note that the scheduler is suspended before
-         portSUPPRESS_TICKS_AND_SLEEP() is called, and resumed when
-         portSUPPRESS_TICKS_AND_SLEEP() returns.  Therefore no other tasks will
-         execute until this function completes. */
-      lowPowerTimeAfterSleep = getCurrentTime();
-
-      /* Correct the kernel tick count to account for the time spent in its low power state. */
-      vTaskStepTick( TIMER_IF_Convert_Tick2ms(lowPowerTimeAfterSleep - lowPowerTimeBeforeSleep) / portTICK_PERIOD_MS );
-
     }
+
+    /* Read the current time from RTC, maintainned in standby */
+    lowPowerTimeBeforeSleep = getCurrentTime();
+
+    /* Enter the low power state. */
+
+    LL_PWR_ClearFlag_STOP();
+    if ( ( system_startup_done != FALSE ) && ( UTIL_LPM_GetMode() == UTIL_LPM_OFFMODE ) )
+    {
+      APP_SYS_BLE_EnterDeepSleep();
+    }
+
+    LL_RCC_ClearResetFlags();
+
+    HAL_SuspendTick();
+    UTIL_LPM_EnterLowPower(); /* WFI instruction call is inside this API */
+    HAL_ResumeTick();
+
+    /* Stop the timer that may wakeup us as wakeup source can be another one */
+    UTIL_TIMER_Stop(&TimerOSwakeup_Id);
+
+    /* Determine how long the microcontroller was actually in a low power
+     state for, which will be less than xExpectedIdleTime if the
+     microcontroller was brought out of low power mode by an interrupt
+     other than that configured by the vSetWakeTimeInterrupt() call.
+     Note that the scheduler is suspended before
+     portSUPPRESS_TICKS_AND_SLEEP() is called, and resumed when
+     portSUPPRESS_TICKS_AND_SLEEP() returns.  Therefore no other tasks will
+     execute until this function completes. */
+    lowPowerTimeAfterSleep = getCurrentTime();
+
+    /* Compute time spent in low power state and report precision loss */
+    lowPowerTimeDiff = (lowPowerTimeAfterSleep - lowPowerTimeBeforeSleep) + lowPowerTimeDiffRemaining;
+    /* Store precision loss during RTC time conversion to report it for next OS tick. */
+    timeDiff = TIMER_IF_Convert_Tick2ms(lowPowerTimeDiff);
+    lowPowerTimeDiffRemaining = lowPowerTimeDiff - TIMER_IF_Convert_ms2Tick(timeDiff);
+    /* Report precision loss */
+    timeDiff += timeDiffRemaining;
+    /* Store precision loss during OS tick time conversion to report it for next OS tick. */
+    timeDiffRemaining = timeDiff % portTICK_PERIOD_MS;
+
+    /* Correct the kernel tick count to account for the time spent in its low power state. */
+    vTaskStepTick( timeDiff / portTICK_PERIOD_MS );
+
     /* Re-enable interrupts to allow the interrupt that brought the MCU
      * out of sleep mode to execute immediately.  See comments above
      * the cpsid instruction above. */
     __asm volatile ( "cpsie i" ::: "memory" );
     __asm volatile ( "dsb" );
     __asm volatile ( "isb" );
+
+    /* Put the radio in active state */
+    if ( ( system_startup_done != FALSE ) && ( UTIL_LPM_GetMode() == UTIL_LPM_OFFMODE ) )
+    {
+      LL_AHB5_GRP1_EnableClock(LL_AHB5_GRP1_PERIPH_RADIO);
+      ll_sys_dp_slp_exit();
+      UTIL_LPM_SetOffMode(1U << CFG_LPM_LL_DEEPSLEEP, UTIL_LPM_ENABLE);
+    }
 
     /* Restart the timer that is generating the OS tick interrupt. */
     UTIL_TIMER_StartWithPeriod(&TimerOStick_Id, portTICK_PERIOD_MS);
@@ -941,6 +1041,23 @@ void vPortSuppressTicksAndSleep( uint32_t xExpectedIdleTime )
 #endif /* ( CFG_LPM_LEVEL != 0) */
 
 /* USER CODE BEGIN FD_WRAP_FUNCTIONS */
+
+
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
+{
+  return HAL_OK;
+}
+
+
+void HAL_SuspendTick(void)
+{
+  return;
+}
+
+void HAL_ResumeTick(void)
+{
+  return;
+}
 
 #if (CFG_LOG_INSERT_TIME_STAMP_INSIDE_THE_TRACE != 0)
 static void LogTimestamp(uint8_t * pData, uint16_t * piSize)

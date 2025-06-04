@@ -63,16 +63,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Src/low_level_flash.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/low_level_spi_device.c</name>
-			<type>1</type>
-			<locationURI>copy_PARENT/Src/low_level_spi_device.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/low_level_spi_flash.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/low_level_spi_flash.c</locationURI>
-		</link>
-		<link>
 			<name>Application/User/low_level_rng.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/low_level_rng.c</locationURI>
@@ -81,6 +71,16 @@
 			<name>Application/User/low_level_security.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/low_level_security.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/low_level_spi_device.c</name>
+			<type>1</type>
+			<locationURI>copy_PARENT/Src/low_level_spi_device.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/low_level_spi_flash.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Src/low_level_spi_flash.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/mpu_armv8m_drv.c</name>
@@ -268,11 +268,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/constant_time.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/mbedtls/hmac_drbg.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/hmac_drbg.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/mbedtls/ecdh.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/ecdh.c</locationURI>
@@ -303,6 +298,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/hkdf.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/mbedtls/hmac_drbg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/hmac_drbg.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/mbedtls/md.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/md.c</locationURI>
@@ -326,6 +326,11 @@
 			<name>Middlewares/mbedtls/sha256.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbedtls/library/sha256.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/mbedtls_alt/sha256_alt.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32WBA_WPAN/mbedtls_alt/source/hal/sha256_alt.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/mcuboot/bl2_main.c</name>
@@ -421,11 +426,6 @@
 			<name>Middlewares/mcuboot/uart_stdout.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mcuboot/platform/ext/common/uart_stdout.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/mbedtls_alt/sha256_alt.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/mbedtls_alt/interfaces/patterns/sha256_alt.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/m95p32.c</name>

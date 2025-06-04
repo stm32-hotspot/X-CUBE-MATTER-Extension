@@ -28,7 +28,9 @@
 #include "ota.h"
 
 #if (OTA_EXTERNAL_FLASH_ENABLE == 1)
-#error "external flash not supported yet"
+#include "stm_ota_spi_flash.h"
+#define F_OTA_FLASH_WriteChunk      STM_OTA_SPI_FLASH_WriteChunk
+#define F_OTA_FLASH_Delete_Image    STM_OTA_SPI_FLASH_Delete_Image
 #else
 #include "stm_ota_flash.h"
 #define F_OTA_FLASH_WriteChunk      STM_OTA_FLASH_WriteChunk

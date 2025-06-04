@@ -36,10 +36,10 @@ struct settingsBlock
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Flag to know whether we are in reset */
-__attribute__ ((section (".noinit"))) uint32_t sSettingsIsReset;
+/*__attribute__ ((section (".noinit")))*/ uint32_t sSettingsIsReset;
 
 /* Pointer to Buf currently used */
-__attribute__ ((section (".noinit"))) uint32_t sSettingsBufPos;
+/*__attribute__ ((section (".noinit")))*/ uint32_t sSettingsBufPos;
 
 //Keep last, aligned 32-bit
 //__attribute__ ((section (".noinit"))) __attribute__ ((aligned (8))) static uint8_t sSettingBufStart[THREAD_SETTINGS_BUFFER_SIZE];

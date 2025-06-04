@@ -33,18 +33,18 @@ namespace PersistedStorage {
  */
 KeyValueStoreManagerImpl KeyValueStoreManagerImpl::sInstance;
 
-CHIP_ERROR KeyValueStoreManagerImpl::_Get(const char *key, void *value,
-		size_t value_size, size_t *read_bytes_size, size_t offset) {
-	CHIP_ERROR err = CHIP_NO_ERROR;
+CHIP_ERROR KeyValueStoreManagerImpl::_Get(const char * key, void * value, size_t value_size,
+                                          size_t * read_bytes_size, size_t offset)
+{
+    CHIP_ERROR err = CHIP_ERROR_INVALID_ARGUMENT;
 
-	if ((key != NULL) && (value != NULL)) {
-		return this->_PrintError(
-				NM_GetKeyValue(value, key, (uint32_t) value_size,
-						read_bytes_size,SECTOR_SECURE));
-	} else {
-		err = CHIP_ERROR_PERSISTED_STORAGE_VALUE_NOT_FOUND;
-	}
-	return err;
+    if ((key != NULL) && (value != NULL) && (read_bytes_size != NULL)) {
+        ChipLogProgress(DataManagement, "Get Key '%s'", key);
+        err = this->ConvertNVMStatus(NVM_GetKeyValue(key, value, (uint32_t)value_size,
+                                                     read_bytes_size, NVM_SECTOR_KEYSTORE));
+    }
+
+    return err;
 }
 
 CHIP_ERROR KeyValueStoreManagerImpl::_Delete(const char *key)

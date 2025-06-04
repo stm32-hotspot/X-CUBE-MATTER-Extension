@@ -86,29 +86,6 @@ void HAL_MspInit(void)
   HAL_NVIC_EnableIRQ(RADIO_IRQn);
 
   /* USER CODE BEGIN MspInit 1 */
-#if 0 /* Code no more needed */
-  //Do not remove, it prevents hardfault in OT stack
-  MPU_Attributes_InitTypeDef MPU_AttributesInit;
-  MPU_Region_InitTypeDef MPU_RegionInit;
-
-  HAL_MPU_Disable();
-
-  MPU_AttributesInit.Number = 0;
-  MPU_AttributesInit.Attributes = INNER_OUTER(MPU_NOT_CACHEABLE);
-  HAL_MPU_ConfigMemoryAttributes(&MPU_AttributesInit);
-
-  MPU_RegionInit.Enable = MPU_REGION_ENABLE;
-  MPU_RegionInit.Number = 0;
-  MPU_RegionInit.AttributesIndex  = 0;
-  MPU_RegionInit.BaseAddress = SRAM6_BASE;
-  MPU_RegionInit.LimitAddress = SRAM6_BASE + SRAM6_SIZE - 1;
-  MPU_RegionInit.AccessPermission = MPU_REGION_ALL_RW;
-  MPU_RegionInit.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-  MPU_RegionInit.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-  HAL_MPU_ConfigRegion(&MPU_RegionInit);
-
-  HAL_MPU_Enable(MPU_HFNMI_PRIVDEF);
-#endif /* 0 - Code no more needed */
   /* USER CODE END MspInit 1 */
 }
 
@@ -310,53 +287,7 @@ void HAL_RNG_MspDeInit(RNG_HandleTypeDef* hrng)
 
 }
 
-/**
-* @brief PKA MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hpka: PKA handle pointer
-* @retval None
-*/
-void HAL_PKA_MspInit(PKA_HandleTypeDef* hpka)
-{
-  if(hpka->Instance==PKA)
-  {
-  /* USER CODE BEGIN PKA_MspInit 0 */
 
-  /* USER CODE END PKA_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_PKA_CLK_ENABLE();
-  /* USER CODE BEGIN PKA_MspInit 1 */
-    HW_RNG_EnableClock(0x04);
-  /* USER CODE END PKA_MspInit 1 */
-
-  }
-
-}
-
-/**
-* @brief PKA MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hpka: PKA handle pointer
-* @retval None
-*/
-void HAL_PKA_MspDeInit(PKA_HandleTypeDef* hpka)
-{
-  if(hpka->Instance==PKA)
-  {
-  /* USER CODE BEGIN PKA_MspDeInit 0 */
-    /* Enable PKA reset state */
-    __HAL_RCC_PKA_FORCE_RESET();
-    /* Release PKA from reset state */
-    __HAL_RCC_PKA_RELEASE_RESET();
-  /* USER CODE END PKA_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_PKA_CLK_DISABLE();
-  /* USER CODE BEGIN PKA_MspDeInit 1 */
-    HW_RNG_DisableClock(0x04);
-  /* USER CODE END PKA_MspDeInit 1 */
-  }
-
-}
 
 /**
 * @brief CRYP MSP Initialization
@@ -373,6 +304,7 @@ void HAL_CRYP_MspInit(CRYP_HandleTypeDef* hcryp)
   /* USER CODE END AES_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_AES_CLK_ENABLE();
+
   /* USER CODE BEGIN AES_MspInit 1 */
 
   /* USER CODE END AES_MspInit 1 */
@@ -609,6 +541,60 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
   /* USER CODE BEGIN USART1_MspDeInit 1 */
 
   /* USER CODE END USART1_MspDeInit 1 */
+  }
+
+}
+
+
+/**
+* @brief PKA MSP Initialization
+* This function configures the hardware resources used in this example
+* @param hpka: PKA handle pointer
+* @retval None
+*/
+void HAL_PKA_MspInit(PKA_HandleTypeDef* hpka)
+{
+  if(hpka->Instance==PKA)
+  {
+    /* USER CODE BEGIN PKA_MspInit 0 */
+
+    /* USER CODE END PKA_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_PKA_CLK_ENABLE();
+    
+    HW_RNG_EnableClock(0x04);
+
+    /* USER CODE BEGIN PKA_MspInit 1 */
+
+    /* USER CODE END PKA_MspInit 1 */
+  }
+
+}
+
+/**
+* @brief PKA MSP De-Initialization
+* This function freeze the hardware resources used in this example
+* @param hpka: PKA handle pointer
+* @retval None
+*/
+void HAL_PKA_MspDeInit(PKA_HandleTypeDef* hpka)
+{
+  if(hpka->Instance==PKA)
+  {
+    /* USER CODE BEGIN PKA_MspDeInit 0 */
+    /* Enable PKA reset state */
+    __HAL_RCC_PKA_FORCE_RESET();
+    /* Release PKA from reset state */
+    __HAL_RCC_PKA_RELEASE_RESET();
+    /* USER CODE END PKA_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_PKA_CLK_DISABLE();
+
+    HW_RNG_DisableClock(0x04);
+
+    /* USER CODE BEGIN PKA_MspDeInit 1 */
+
+    /* USER CODE END PKA_MspDeInit 1 */
   }
 
 }

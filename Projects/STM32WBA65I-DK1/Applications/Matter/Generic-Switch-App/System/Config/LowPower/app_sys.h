@@ -38,6 +38,7 @@ extern "C" {
 /* USER CODE END EC */
 
 /* Exported functions prototypes ---------------------------------------------*/
+
 void APP_SYS_BLE_EnterDeepSleep(void);
 /* USER CODE BEGIN EFP */
 

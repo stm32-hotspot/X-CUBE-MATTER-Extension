@@ -25,7 +25,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 /* Includes ------------------------------------------------------------------*/
+#include "cmsis_os2.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -38,11 +40,22 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
+#define DRIFT_TIME_DEFAULT                      (13)
+#define DRIFT_TIME_EXTRA_LSI2                   (9)
+#define DRIFT_TIME_EXTRA_GCC_DEBUG              (6)
+
+#define EXEC_TIME_DEFAULT                       (10)
+#define EXEC_TIME_EXTRA_LSI2                    (3)
+#define EXEC_TIME_EXTRA_GCC_DEBUG               (4)
+
+#define SCHDL_TIME_DEFAULT                      (20)
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
 
 /* External variables --------------------------------------------------------*/
+extern osMutexId_t LinkLayerMutex;
+
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -56,7 +69,6 @@ extern "C" {
 #if (USE_TEMPERATURE_BASED_RADIO_CALIBRATION == 1)
 void ll_sys_bg_temperature_measurement(void);
 #endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
-
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

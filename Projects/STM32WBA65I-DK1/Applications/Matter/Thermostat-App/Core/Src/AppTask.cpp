@@ -53,24 +53,7 @@
 #include <platform/ThreadStackManager.h>
 #endif
 
-#ifdef STM32WBA55xx
-#ifdef CFG_BSP_ON_DISCOVERY
-#include "stm32wba55g_discovery.h"
-#endif /* CFG_BSP_ON_DISCOVERY */
-#endif /* STM32WBA55xx */
-
-#ifdef STM32WBA65xx
-#ifdef CFG_BSP_ON_DISCOVERY
 #include "stm32wba65i_discovery.h"
-#endif /* CFG_BSP_ON_DISCOVERY */
-#endif /* STM32WBA65xx */
-
-#ifdef CFG_BSP_ON_CEB
-#include "b_wba5m_wpan.h"
-#endif /* CFG_BSP_ON_CEB */
-#ifdef CFG_BSP_ON_NUCLEO
-#include "stm32wbaxx_nucleo.h"
-#endif /* CFG_BSP_ON_CEB */
 #include "app_conf.h"
 #include "app_bsp.h"
 #include "qr_code.h"
@@ -148,7 +131,11 @@ CHIP_ERROR AppTask::Init() {
 
     ThreadStackMgr().InitThreadStack();
 
-    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router);
+#if ( CHIP_DEVICE_CONFIG_ENABLE_SED == 1)
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice);
+#else
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_FullEndDevice);
+#endif
 
     PlatformMgr().AddEventHandler(MatterEventHandler, 0);
 
@@ -309,8 +296,10 @@ void AppTask::ButtonEventHandler(ButtonDesc_t *Button) {
     	 AppEvent event;
     	 event.Type = AppEvent::kEventType_Timer;
     	 event.Handler = UpdateNvmEventHandler;
-    	 sAppTask.mFunction = kFunction_FactoryReset;;
-    	 sAppTask.PostEvent(&event);
+    	 if (Button->longPressed) {
+    	   sAppTask.mFunction = kFunction_FactoryReset;
+      	   sAppTask.PostEvent(&event);
+    	 }
     }
     if (Button->button == B3) { /* JOY_RIGHT */
         AppEvent event;
@@ -319,8 +308,8 @@ void AppTask::ButtonEventHandler(ButtonDesc_t *Button) {
         sAppTask.PostEvent(&event);
     }
     if (Button->button == B4) {/* JOY_LEFT */
-        AppEvent event;
-        event.Type = AppEvent::kEventType_Timer;
+    	 AppEvent event;
+    	 event.Type = AppEvent::kEventType_Timer;
         event.Handler = UserButton3EventHandler;
         sAppTask.PostEvent(&event);
     }
@@ -328,7 +317,7 @@ void AppTask::ButtonEventHandler(ButtonDesc_t *Button) {
         AppEvent event;
         event.Type = AppEvent::kEventType_Timer;
         event.Handler = UserButton1EventHandler;
-        sAppTask.PostEvent(&event);
+      sAppTask.PostEvent(&event);
     }
     else {
         return;
@@ -472,7 +461,7 @@ void AppTask::MatterEventHandler(const ChipDeviceEvent *event, intptr_t) {
     case DeviceEventType::kCommissioningComplete: {
         sFabricNeedSaved = true;
         sHaveFabric = true;
-        // check if ble is on, since before save in nvm we need to stop m0, Better to write in nvm when m0 is less busy
+        
         if (sHaveBLEConnections == false) {
             sFabricNeedSaved = false; // put to false to avoid save in nvm 2 times
             AppEvent event;
@@ -482,8 +471,8 @@ void AppTask::MatterEventHandler(const ChipDeviceEvent *event, intptr_t) {
             sAppTask.PostEvent(&event);
         }
 
-       TempSensMgr().StartInternalMeasurement();
-       TempSensMgr().StartExternalMeasurement();
+        TempSensMgr().StartInternalMeasurement();
+        TempSensMgr().StartExternalMeasurement();
 
         UpdateLCD();
         break;
@@ -520,14 +509,12 @@ void AppTask::UpdateLCD(void) {
     if (sIsThreadProvisioned && sIsThreadEnabled) {
         UTIL_LCD_DisplayStringAt(0, LINE(4), (uint8_t*) "Network Joined", LEFT_MODE);
     } else if ((sIsThreadProvisioned == false) || (sIsThreadEnabled == false)) {
-        // UTIL_LCD_ClearStringLine(4);
     }
     if (sHaveBLEConnections) {
-        // UTIL_LCD_ClearStringLine(1);
         BSP_LCD_Clear(LCD1, LCD_COLOR_BLACK);
-		BSP_LCD_Refresh(LCD1);
+        BSP_LCD_Refresh(LCD1);
 		UTIL_LCD_DisplayStringAt(0, 0, (uint8_t*) "Matter Thermostat", CENTER_MODE);
-		UTIL_LCD_DisplayStringAt(0, LINE(1), (uint8_t*) "BLE Connected", LEFT_MODE);
+        UTIL_LCD_DisplayStringAt(0, LINE(1), (uint8_t*) "BLE Connected", LEFT_MODE);
     }
     if (sHaveFabric) {
         UTIL_LCD_ClearStringLine(1);
@@ -563,7 +550,7 @@ void AppTask::UpdateTempGUI(void) {
 	UTIL_LCD_DisplayStringAt(0, LINE(2), (uint8_t*) Message, CENTER_MODE);
 	snprintf(Message, sizeof(Message), "H:%d,C:%d", heat_set, cool_set);
 	UTIL_LCD_DisplayStringAt(0, LINE(3), (uint8_t*) Message, CENTER_MODE);
-	BSP_LCD_Refresh(LCD1);
+    BSP_LCD_Refresh(LCD1);
 }
 #else
 void AppTask::UpdateLCD(void)
@@ -571,4 +558,8 @@ void AppTask::UpdateLCD(void)
 }
 void AppTask::UpdateTempGUI(void) {}
 #endif /* CFG_LCD_SUPPORTED == 1 */
+
+
+
+
 

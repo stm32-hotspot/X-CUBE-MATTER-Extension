@@ -53,24 +53,7 @@
 #include <platform/ThreadStackManager.h>
 #endif
 
-#ifdef STM32WBA55xx
-#ifdef CFG_BSP_ON_DISCOVERY
-#include "stm32wba55g_discovery.h"
-#endif /* CFG_BSP_ON_DISCOVERY */
-#endif /* STM32WBA55xx */
-
-#ifdef STM32WBA65xx
-#ifdef CFG_BSP_ON_DISCOVERY
-#include "stm32wba65i_discovery.h"
-#endif /* CFG_BSP_ON_DISCOVERY */
-#endif /* STM32WBA65xx */
-
-#ifdef CFG_BSP_ON_CEB
-#include "b_wba5m_wpan.h"
-#endif /* CFG_BSP_ON_CEB */
-#ifdef CFG_BSP_ON_NUCLEO
 #include "stm32wbaxx_nucleo.h"
-#endif /* CFG_BSP_ON_CEB */
 #include "app_conf.h"
 #include "app_bsp.h"
 
@@ -87,7 +70,6 @@ using chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr;
 AppTask AppTask::sAppTask;
 chip::DeviceLayer::FactoryDataProvider mFactoryDataProvider;
 
-// #define STM32ThreadDataSet "STM32DataSet"
 #define APP_EVENT_QUEUE_SIZE 10
 #define NVM_TIMEOUT 1000  // timer to handle PB to save data in nvm or do a factory reset
 #define STM32_LIGHT_ENDPOINT_ID 1
@@ -147,7 +129,11 @@ CHIP_ERROR AppTask::Init() {
 
     ThreadStackMgr().InitThreadStack();
 
-    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router);
+#if ( CHIP_DEVICE_CONFIG_ENABLE_SED == 1)
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice);
+#else
+    ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_FullEndDevice);
+#endif
 
     PlatformMgr().AddEventHandler(MatterEventHandler, 0);
 
@@ -266,18 +252,13 @@ void AppTask::ButtonEventHandler(ButtonDesc_t *Button) {
     	 AppEvent event;
     	 event.Type = AppEvent::kEventType_Timer;
     	 event.Handler = UpdateNvmEventHandler;
-         if (Button->longPressed) sAppTask.mFunction = kFunction_FactoryReset;
-         else sAppTask.mFunction = kFunction_SaveNvm;
+    	 if (Button->longPressed) sAppTask.mFunction = kFunction_FactoryReset;
+		 else sAppTask.mFunction = kFunction_SaveNvm;
     	 sAppTask.PostEvent(&event);
     }
     if (Button->button == B2) {/* JOY_SELECT */
     }
     if (Button->button == B3) {/* JOY_RIGHT */
-    	 AppEvent event;
-    	 event.Type = AppEvent::kEventType_Timer;
-    	 event.Handler = UpdateNvmEventHandler;
-    	 sAppTask.mFunction = kFunction_FactoryReset;;
-    	 sAppTask.PostEvent(&event);
     }
     else {
         return;
@@ -365,7 +346,7 @@ void AppTask::MatterEventHandler(const ChipDeviceEvent *event, intptr_t) {
     case DeviceEventType::kCommissioningComplete: {
         sFabricNeedSaved = true;
         sHaveFabric = true;
-        // check if ble is on, since before save in nvm we need to stop m0, Better to write in nvm when m0 is less busy
+        
         if (sHaveBLEConnections == false) {
             sFabricNeedSaved = false; // put to false to avoid save in nvm 2 times
             AppEvent event;

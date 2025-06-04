@@ -31,7 +31,7 @@
 /* Private defines -----------------------------------------------------------*/
 /* Private macros ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/* kDevelopmentDAC_PrivateKey_FFF1_8004 as exemple*/
+/* kDevelopmentDAC_PrivateKey_FFF1_8004 as example*/
 
 const uint8_t DA_Private_Key[] =
 {

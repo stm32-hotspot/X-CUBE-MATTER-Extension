@@ -28,7 +28,8 @@
 #endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
 /* Private includes -----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32wba65i_discovery.h"
+
+
 /* USER CODE END Includes */
 
 /* External variables --------------------------------------------------------*/
@@ -40,7 +41,9 @@ extern RAMCFG_HandleTypeDef hramcfg_SRAM1;
 extern RNG_HandleTypeDef hrng;
 
 /* USER CODE BEGIN EV */
-
+#if (CFG_JOYSTICK_SUPPORTED == 1)
+extern uint8_t JOY_StandbyExitFlag;
+#endif /* CFG_JOYSTICK_SUPPORTED */
 /* USER CODE END EV */
 
 /* Functions Definition ------------------------------------------------------*/
@@ -56,25 +59,13 @@ void MX_StandbyExit_PeripheralInit(void)
 
   /* USER CODE END MX_STANDBY_EXIT_PERIPHERAL_INIT_1 */
 
-#if (USE_TEMPERATURE_BASED_RADIO_CALIBRATION == 1)
-  memset(&hadc4, 0, sizeof(hadc4));
-#endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
-  memset(&hcrc, 0, sizeof(hcrc));
   memset(&hramcfg_SRAM1, 0, sizeof(hramcfg_SRAM1));
   memset(&hrng, 0, sizeof(hrng));
 
   MX_GPIO_Init();
-  MX_RAMCFG_Init();
-#if (USE_TEMPERATURE_BASED_RADIO_CALIBRATION == 1)
-  MX_ADC4_Init();
-#endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
-  MX_RNG_Init();
-  MX_CRC_Init();
   MX_ICACHE_Init();
-  CRCCTRL_Init();
-#if (USE_TEMPERATURE_BASED_RADIO_CALIBRATION == 1)
-  ADCCTRL_Init();
-#endif /* USE_TEMPERATURE_BASED_RADIO_CALIBRATION */
+  MX_RAMCFG_Init();
+  MX_RNG_Init();
 
 #if (CFG_DEBUGGER_LEVEL == 0)
   GPIO_InitTypeDef DbgIOsInit = {0};
@@ -91,10 +82,8 @@ void MX_StandbyExit_PeripheralInit(void)
   HAL_GPIO_Init(GPIOB, &DbgIOsInit);
 #endif /* CFG_DEBUGGER_LEVEL */
   /* USER CODE BEGIN MX_STANDBY_EXIT_PERIPHERAL_INIT_2 */
-#if (CFG_BUTTON_SUPPORTED == 1)
-  BSP_PB_Init(B1, BUTTON_MODE_EXTI);
-  BSP_PB_Init(B2, BUTTON_MODE_EXTI);
-  BSP_PB_Init(B3, BUTTON_MODE_EXTI);
-#endif
+#if (CFG_JOYSTICK_SUPPORTED == 1)
+  JOY_StandbyExitFlag = 1;
+#endif /* CFG_JOYSTICK_SUPPORTED */
   /* USER CODE END MX_STANDBY_EXIT_PERIPHERAL_INIT_2 */
 }

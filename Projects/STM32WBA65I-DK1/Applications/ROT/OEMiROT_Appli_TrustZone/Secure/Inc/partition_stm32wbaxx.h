@@ -74,12 +74,12 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START0     S_CODE_START      /* start address of SAU region 0 */
+#define SAU_INIT_START0     NSC_CODE_START      /* start address of SAU region 0 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END0       (NSC_CODE_START + S_CODE_SIZE - 1)      /* end address of SAU region 0 */
+#define SAU_INIT_END0       (NSC_CODE_START + NSC_CODE_SIZE - 1)      /* end address of SAU region 0 */
 
 /*
 //     <o>Region is

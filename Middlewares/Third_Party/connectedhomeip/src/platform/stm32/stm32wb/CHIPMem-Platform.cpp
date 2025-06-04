@@ -45,6 +45,7 @@
 #include <lib/support/logging/CHIPLogging.h>
 
 #include "cmsis_os.h"
+#include "FreeRTOS.h"
 #include "task.h"
 #include "mbedtls/platform.h"
 

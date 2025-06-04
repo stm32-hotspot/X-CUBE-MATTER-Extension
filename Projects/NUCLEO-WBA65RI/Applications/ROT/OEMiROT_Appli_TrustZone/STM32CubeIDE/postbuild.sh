@@ -92,7 +92,7 @@ fi
 #Variables updated by OEMiROT_Boot postbuild
 #=================================================================================================
 image_s_size=0x6000
-image_ns_size=0xE0000
+image_ns_size=0x1C6000
 app_image_number=2
 
 applicfg="$cube_fw_path/Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe"

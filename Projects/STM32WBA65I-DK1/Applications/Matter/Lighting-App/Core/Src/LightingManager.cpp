@@ -21,7 +21,7 @@
 #include <lib/support/logging/CHIPLogging.h>
 
 // default initialization value for the light level after start
-constexpr uint8_t kDefaultLevel = 64;
+constexpr uint8_t kDefaultLevel = 0;
 
 LightingManager LightingManager::sLight;
 

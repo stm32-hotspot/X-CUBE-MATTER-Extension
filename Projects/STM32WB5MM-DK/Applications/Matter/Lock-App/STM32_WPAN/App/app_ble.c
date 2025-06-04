@@ -20,18 +20,21 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "app_common.h"
-
 #include "dbg_trace.h"
 #include "ble.h"
 #include "tl.h"
 #include "app_ble.h"
-
+#include "FreeRTOS.h"
 #include "cmsis_os.h"
 #include "timers.h"
 #include "shci.h"
 #include "stm32_lpm.h"
 #include "otp.h"
 #include "app_matter.h"
+#include "CHIPProjectConfig.h"
+#if (CONFIG_STM32_FACTORY_DATA_ENABLE == 1)
+#include "stm32_factorydata.h"
+#endif /* CONFIG_STM32_FACTORY_DATA_ENABLE */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -168,11 +171,11 @@ typedef struct
 /* USER CODE END PTD */
 
 /* Private defines -----------------------------------------------------------*/
-#define APPBLE_GAP_DEVICE_NAME_LENGTH 7
+#define APPBLE_GAP_DEVICE_NAME_LENGTH 	7
 #define FAST_ADV_TIMEOUT               (30*1000*1000/CFG_TS_TICK_VAL) /**< 30s */
 #define INITIAL_ADV_TIMEOUT            (1*1000*1000/CFG_TS_TICK_VAL) /**< 60s */
 
-#define BD_ADDR_SIZE_LOCAL    6
+#define BD_ADDR_SIZE_LOCAL    			6
 
 /* USER CODE BEGIN PD */
 #define LED_ON_TIMEOUT                 (0.005*1000*1000/CFG_TS_TICK_VAL) /**< 5ms */
@@ -222,6 +225,16 @@ uint8_t index_con_int, mutex;
  * Advertising Data
  */
 static const char local_name[] = { AD_TYPE_COMPLETE_LOCAL_NAME, 'S', 'T', 'D', 'K', 'M', 'A', 'T', 'T', 'E', 'R' };
+/* Advertising Data */
+/* ADV for matter */
+/* Byte 8 to 13 to be overwritten with default or Factory Data value */
+/* Byte 8-9  : Discriminator */
+/* Byte 10-11: VendorID      */
+/* Byte 12-13: ProductID     */
+
+uint8_t a_AdvData[15] = { 0x02, AD_TYPE_FLAGS, 0x06,
+		                  0x0B, AD_TYPE_SERVICE_DATA, 0xF6, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
 uint8_t manuf_data[15] = { 0x02, 0x01, 0x06, 0x0B, 0x16, 0xF6, 0xFF, 0x00, 0x00, 0x0F, 0xF1, 0xFF, 0x04, 0x80, 0x00, };
 
 
@@ -266,7 +279,7 @@ static void Ble_Tl_Init( void );
 static void Ble_Hci_Gap_Gatt_Init(void);
 static const uint8_t* BleGetBdAddress( void );
 static void HciUserEvtProcess(void *argument);
-//static void Switch_OFF_GPIO( void );
+static void fill_advData(uint8_t *p_adv_data, uint8_t tab_size);
 #if(L2CAP_REQUEST_NEW_CONN_PARAM != 0)  
 static void ConnIntUpdateReqProcess(void *argument);
 static void BLE_SVC_L2CAP_Conn_Update(uint16_t Connection_Handle);
@@ -525,14 +538,6 @@ static void Ble_Tl_Init( void )
                             CONFIG_DATA_PUBADDR_LEN,
                             (uint8_t*) bd_addr);
 
-  /* BLE MAC in ADV Packet */
- // manuf_data[ sizeof(manuf_data)-6] = bd_addr[5];
-  //manuf_data[ sizeof(manuf_data)-5] = bd_addr[4];
-  //manuf_data[ sizeof(manuf_data)-4] = bd_addr[3];
-  //manuf_data[ sizeof(manuf_data)-3] = bd_addr[2];
-  //manuf_data[ sizeof(manuf_data)-2] = bd_addr[1];
-  //manuf_data[ sizeof(manuf_data)-1] = bd_addr[0];
-  
   /**
    * Static random Address
    * The two upper bits shall be set to 1
@@ -634,6 +639,12 @@ static void Ble_Tl_Init( void )
                                          0
   );
 
+/* USER CODE BEGIN Ble_Hci_Gap_Gatt_Init_1*/
+  /* Initialize Advertise Data */
+  fill_advData(&a_AdvData[0], sizeof(a_AdvData));
+/* USER CODE END Ble_Hci_Gap_Gatt_Init_1*/
+
+
   /**
    * Initialize whitelist
    */
@@ -641,6 +652,8 @@ static void Ble_Tl_Init( void )
    {
      aci_gap_configure_whitelist();
    }
+
+
 }
 
 void APP_BLE_Adv_Request(APP_BLE_ConnStatus_t New_Status)
@@ -693,7 +706,7 @@ void APP_BLE_Adv_Request(APP_BLE_ConnStatus_t New_Status)
         0,
         0);
     /* Update Advertising data */
-    ret = aci_gap_update_adv_data(sizeof(manuf_data), (uint8_t*) manuf_data);
+    ret = aci_gap_update_adv_data(sizeof(a_AdvData), (uint8_t*) a_AdvData);
 
      if (ret == BLE_STATUS_SUCCESS)
     {
@@ -870,7 +883,81 @@ static void HciUserEvtProcess(void *argument)
 }
 
 /* USER CODE BEGIN FD_SPECIFIC_FUNCTIONS */
+static void fill_advData(uint8_t *p_adv_data, uint8_t tab_size){
+	uint16_t i = 0;
+	uint8_t ad_length, ad_type;
 
+	while (i < tab_size) {
+		ad_length = p_adv_data[i];
+		ad_type = p_adv_data[i + 1];
+
+		switch (ad_type) {
+
+		case AD_TYPE_SERVICE_DATA:
+#if (CONFIG_STM32_FACTORY_DATA_ENABLE == 1)
+			 FACTORYDATA_StatusTypeDef err = DATAFACTORY_OK;
+			 uint32_t tlvDataLength = 0;
+			 uint16_t setupDiscriminator = 0;
+			 uint16_t vendorId = 0;
+			 uint16_t productId = 0;
+
+			 err = FACTORYDATA_GetValue(TAG_ID_SETUP_DISCRIMINATOR, (uint8_t *) &setupDiscriminator,
+					                    sizeof(setupDiscriminator), &tlvDataLength);
+
+			 if (err == DATAFACTORY_OK )
+			 {
+				 p_adv_data[i+5] = (uint8_t) (setupDiscriminator & 0xFF);
+				 p_adv_data[i+6] = (uint8_t) (setupDiscriminator >>8) ;
+			 }
+			 else
+			 {
+				 APP_DBG_MSG("Failed to get from Factory Data Discriminator.\n");
+			 }
+
+			 err = FACTORYDATA_GetValue(TAG_ID_VENDOR_ID, (uint8_t *) &vendorId,
+			 					                    sizeof(vendorId), &tlvDataLength);
+			 if (err == DATAFACTORY_OK )
+			 {
+				 p_adv_data[i+7] = (uint8_t) (vendorId & 0xFF);
+				 p_adv_data[i+8] = (uint8_t) (vendorId >>8);
+			 }
+			 else
+			 {
+				 APP_DBG_MSG("Failed to get from Factory Data VendorId.\n");
+			 }
+
+
+			 err = FACTORYDATA_GetValue(TAG_ID_PRODUCT_ID, (uint8_t *) &productId,
+			 					                    sizeof(productId), &tlvDataLength);
+			 if (err == DATAFACTORY_OK )
+			 {
+			     p_adv_data[i+9] = (uint8_t) (productId & 0xFF);
+			     p_adv_data[i+10] = (uint8_t) (productId >> 8);
+			 }
+			 else
+			 {
+				 APP_DBG_MSG("Failed to get from Factory Data ProductId.\n");
+			 }
+
+
+
+#else
+			p_adv_data[i+5] = (uint8_t) (CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR & 0xFF);
+			p_adv_data[i+6] = (uint8_t) (CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR >> 8);
+			p_adv_data[i+7] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID & 0xFF);
+			p_adv_data[i+8] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID >> 8);
+			p_adv_data[i+9] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID &0xFF);
+			p_adv_data[i+10] = (uint8_t) (CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID >>8);
+#endif /* CONFIG_STM32_FACTORY_DATA_ENABLE */
+			break;
+		case AD_TYPE_COMPLETE_LOCAL_NAME:
+		case AD_TYPE_FLAGS:
+		default:
+			break;
+		}
+		i += ad_length + 1; /* increment the iterator to go on next element*/
+	}
+}
 /* USER CODE END FD_SPECIFIC_FUNCTIONS */
 /*************************************************************
  *
